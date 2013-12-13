@@ -62,10 +62,24 @@ class Module
             ),
 
             'invokables' => array(
+                'playgroundemailcampaign_template_service' => 'PlaygroundEmailCampaign\Service\Template',
+                'playgroundemailcampaign_mailinglist_service' => 'PlaygroundEmailCampaign\Service\MailingList',
+                'playgroundemailcampaign_campaign_service' => 'PlaygroundEmailCampaign\Service\Campaign',
 
+                'playgroundemailcampaign_mailchimp_service' => 'PlaygroundEmailCampaign\Service\MailChimpService',
             ),
 
             'factories' => array(
+                'playgroundemailcampaign_module_options' => function ($sm) {
+                    $config = $sm->get('Configuration');
+                    return new Options\ModuleOptions(isset($config['playgroundemailcampaign']) ? $config['playgroundemailcampaign'] : array());
+                },
+                'playgroundemailcampaign_template_mapper' => function ($sm) {
+                    $mapper = new Mapper\Template(
+                        $sm->get('doctrine.entitymanager.orm_default')
+                    );
+                    return $mapper;
+                },
             ),
         );
     }

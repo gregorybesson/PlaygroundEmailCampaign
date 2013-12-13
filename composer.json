@@ -13,11 +13,11 @@
         "playground",
         "email",
         "campaign",
-	"newsletter",
-	"one-to-many",
-	"marketting",
-	"templating",
-	"mailchimp",
+        "newsletter",
+        "one-to-many",
+        "marketting",
+        "templating",
+        "mailchimp",
     ],
     "homepage" : "https://github.com/gregorybesson/PlaygroundEmailCampaign",
     "license" : [
@@ -32,7 +32,8 @@
         "zendframework/zend-loader" : "~2.1",
         "zendframework/zend-servicemanager" : "~2.1",
         "playground/core" : "dev-master",
-        "playground/" : "dev-master",
+        "playground/user" : "dev-develop",
+        "playground/design" : "dev-develop",
         "zendframework/zend-modulemanager" : "~2.1"
     },
     "require-dev" : {
