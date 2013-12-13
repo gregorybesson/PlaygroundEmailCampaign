@@ -33,11 +33,10 @@ class Template implements InputFilterAwareInterface
      */
     protected $title;
 
-
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="html_file_url", type="string")
      */
-    protected $htmlStructure;
+    protected $htmlFileURL;
 
     public function getId()
     {
@@ -61,15 +60,20 @@ class Template implements InputFilterAwareInterface
         return $this;
     }
 
-    public function getHtmlStructure()
+    public function getHtmlFileURL()
     {
-        return $this->htmlStructure;
+        return $this->htmlFileURL;
     }
 
-    public function setHtmlStructure($htmlStructure)
+    public function setHtmlFileURL($htmlFileURL)
     {
-        $this->htmlStructure = $htmlStructure;
+        $this->htmlFileURL = $htmlFileURL;
         return $this;
+    }
+
+    public function getArrayCopy()
+    {
+        return get_object_vars($this);
     }
 
     public function populate($data= array())
@@ -77,8 +81,8 @@ class Template implements InputFilterAwareInterface
         if (isset($data['title']) && $data['title'] != null) {
             $this->title = $data['title'];
         }
-        if (isset($data['htmlStructure']) && $data['htmlStructure'] != null) {
-            $this->htmlStructure = $data['htmlStructure'];
+        if (isset($data['htmlFileURL']) && $data['htmlFileURL'] != null) {
+            $this->htmlFileURL = $data['htmlFileURL'];
         }
     }
 
@@ -93,18 +97,22 @@ class Template implements InputFilterAwareInterface
             $inputFilter->add($factory->createInput(array(
                 'name' => 'title',
                 'required' => true,
+                'allowEmpty' => false,
                 'validators' => array(
                     array('name' => 'NotEmpty',),
                 ),
             )));
 
             $inputFilter->add($factory->createInput(array(
-                'name' => 'htmlStructure',
-                'required' => true,
+                'name' => 'htmlFileURL',
+                'required' => false,
+                'allowEmpty' => true,
                 'validators' => array(
                     array('name' => 'NotEmpty',),
                 ),
             )));
+
+            $this->inputFilter = $inputFilter;
         }
         return $this->inputFilter;
     }

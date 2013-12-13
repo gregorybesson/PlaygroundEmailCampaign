@@ -42,14 +42,62 @@ return array(
     ),
     'router' => array(
         'routes' => array(
-            'frontend' => array(
-                'child_routes' => array(
+//             'frontend' => array(
+//                 'child_routes' => array(
 
-                ),
-            ),
+//                 ),
+//             ),
             'admin' => array(
                 'child_routes' => array(
-
+                    'email-campaign' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/email-campaign',
+                            'defaults' => array(
+                                'controller' => 'playgroundweatheradmin',
+                                'action' => 'admin',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'templates' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/templates',
+                                    'defaults' => array(
+                                        'controller' => 'playgroundemailcampaign_admin_template',
+                                        'action' => 'list',
+                                    ),
+                                ),
+                                'may_terminate' => true,
+                                'child_routes' => array(
+                                    'add' => array(
+                                        'type' => 'Literal',
+                                        'options' => array(
+                                            'route' => '/add',
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_template',
+                                                'action' => 'add',
+                                            ),
+                                        ),
+                                    ),
+                                    'edit' => array(
+                                        'type' => 'Literal',
+                                        'options' => array(
+                                            'route' => '/edit/:templateId',
+                                            'constraints' => array(
+                                                ':templateId' => '[0-9]+',
+                                            ),
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_template',
+                                                'action' => 'edit',
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),

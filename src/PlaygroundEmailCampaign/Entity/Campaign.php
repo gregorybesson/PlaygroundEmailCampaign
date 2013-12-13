@@ -77,8 +77,118 @@ class Campaign implements InputFilterAwareInterface
      */
     protected $unsubscribeURL;
 
+
+    public function getArrayCopy()
+    {
+        return get_object_vars($this);
+    }
+
+    public function populate($data= array())
+    {
+        if (isset($data['name']) && $data['name'] != null) {
+            $this->name = $data['name'];
+        }
+        if (isset($data['description']) && $data['description'] != null) {
+            $this->description = $data['description'];
+        }
+        if (isset($data['fromName']) && $data['fromName'] != null) {
+            $this->fromName = $data['fromName'];
+        }
+        if (isset($data['fromEmail']) && $data['fromEmail'] != null) {
+            $this->fromEmail = $data['fromEmail'];
+        }
+        if (isset($data['$subject']) && $data['$subject'] != null) {
+            $this->$subject = $data['$subject'];
+        }
+        if (isset($data['template']) && $data['template'] != null) {
+            $this->template = $data['template'];
+        }
+        if (isset($data['mailingList']) && $data['mailingList'] != null) {
+            $this->mailingList = $data['mailingList'];
+        }
+        if (isset($data['isTracked']) && $data['isTracked'] != null) {
+            $this->isTracked = $data['isTracked'];
+        }
+        if (isset($data['trackingURL']) && $data['trackingURL'] != null) {
+            $this->trackingURL = $data['trackingURL'];
+        }
+        if (isset($data['unsubscribeURL']) && $data['unsubscribeURL'] != null) {
+            $this->unsubscribeURL = $data['unsubscribeURL'];
+        }
+    }
+
     public function getInputFilter()
     {
+        if (!$this->inputFilter) {
+            $inputFilter = new InputFilter();
+            $factory = new Factory();
+
+            $inputFilter->add($factory->createInput(array('name' => 'id', 'required' => true, 'filters' => array(array('name' => 'Int'),),)));
+
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'name',
+                'required' => true,
+                'allowEmpty' => false,
+                'validators' => array(
+                    array('name' => 'NotEmpty',),
+                ),
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'description',
+                'required' => false,
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'fromName',
+                'required' => false,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StringToLower', 'options' => array('encoding' => 'UTF-8')),
+                ),
+                'validators' => array(
+                    array('name' => 'StringLength', 'options' => array('min'=>1, 'max' => 255)),
+                ),
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'fromEmail',
+                'required' => false,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StringToLower', 'options' => array('encoding' => 'UTF-8')),
+                ),
+                'validators' => array(
+                    array('name' => 'StringLength', 'options' => array('min'=>1, 'max' => 255)),
+                ),
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'subject',
+                'required' => false,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StringToLower', 'options' => array('encoding' => 'UTF-8')),
+                ),
+                'validators' => array(
+                    array('name' => 'StringLength', 'options' => array('min'=>1, 'max' => 255)),
+                ),
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'trackingURL',
+                'required' => false,
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'unsuscribeLink',
+                'required' => false,
+            )));
+            $this->inputFilter= $inputFilter;
+        }
         return $this->inputFilter;
     }
 

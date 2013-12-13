@@ -26,8 +26,8 @@ class Email implements InputFilterAwareInterface
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Campaign", inversedBy="emails", cascade={"persist"})
-     * @ORM\JoinColumn(name="campaign_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Campaign", inversedBy="emails", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="campaign_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $campaign;
 

@@ -8,6 +8,16 @@ use Zend\Stdlib\AbstractOptions;
 class ModuleOptions extends AbstractOptions
 {
     /**
+     * drive path to weather media files
+     */
+    protected $media_path = 'public/media/email-campaign';
+
+    /**
+     * url path to story media files
+     */
+    protected $media_url = 'media/email-campaign';
+
+    /**
      * web mail service name
      */
     protected $service = 'MailChimp';
@@ -21,6 +31,36 @@ class ModuleOptions extends AbstractOptions
      * web mail API url
      */
     protected $queryURL = 'https://<dc>.api.mailchimp.com/2.0/';
+
+    public function setMediaPath($media_path)
+    {
+        $this->media_path = trim($media_path);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMediaPath()
+    {
+        return $this->media_path;
+    }
+
+    public function setMediaUrl($media_url)
+    {
+        $this->media_url = trim($media_url);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMediaUrl()
+    {
+        return $this->media_url;
+    }
 
     public function getService()
     {

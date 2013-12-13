@@ -15,6 +15,14 @@ class CampaignController extends AbstractActionController
      */
     protected $campaignService;
 
+    public function listAction()
+    {
+        return new ViewModel(array(
+
+        ));
+    }
+
+
     public function getCampaignService()
     {
         if ($this->campaignService === null) {

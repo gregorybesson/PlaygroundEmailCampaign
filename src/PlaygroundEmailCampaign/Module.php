@@ -5,6 +5,7 @@ namespace PlaygroundEmailCampaign;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Validator\AbstractValidator;
+use Doctrine\ORM\Mapping\Entity;
 
 class Module
 {
@@ -79,6 +80,43 @@ class Module
                         $sm->get('doctrine.entitymanager.orm_default')
                     );
                     return $mapper;
+                },
+                'playgroundemailcampaign_contact_mapper' => function ($sm) {
+                    $mapper = new Mapper\Contact(
+                        $sm->get('doctrine.entitymanager.orm_default')
+                    );
+                    return $mapper;
+                },
+                'playgroundemailcampaign_mailinglist_mapper' => function ($sm) {
+                    $mapper = new Mapper\MailingList(
+                        $sm->get('doctrine.entitymanager.orm_default')
+                    );
+                    return $mapper;
+                },
+                'playgroundemailcampaign_subscription_mapper' => function ($sm) {
+                    $mapper = new Mapper\Subscription(
+                        $sm->get('doctrine.entitymanager.orm_default')
+                    );
+                    return $mapper;
+                },
+                'playgroundemailcampaign_campaign_mapper' => function ($sm) {
+                    $mapper = new Mapper\Campaign(
+                        $sm->get('doctrine.entitymanager.orm_default')
+                    );
+                    return $mapper;
+                },
+                'playgroundemailcampaign_email_mapper' => function ($sm) {
+                    $mapper = new Mapper\Email(
+                        $sm->get('doctrine.entitymanager.orm_default')
+                    );
+                    return $mapper;
+                },
+                'playgroundemailcampaign_template_form' => function  ($sm) {
+                    $translator = $sm->get('translator');
+                    $form = new Form\Admin\Template(null, $sm, $translator);
+                    $template = new \PlaygroundEmailCampaign\Entity\Template();
+                    $form->setInputFilter($template->getInputFilter());
+                    return $form;
                 },
             ),
         );
