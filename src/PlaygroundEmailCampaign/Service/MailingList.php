@@ -8,6 +8,7 @@ use Zend\ServiceManager\ServiceManagerAwareInterface;
 
 use PlaygroundEmailCampaign\Entity\MailingList as MailingListEntity;
 use PlaygroundEmailCampaign\Mapper\MailingList as MailingListMapper;
+use PlaygroundEmailCampaign\Mapper\Subscription as SubscriptionMapper;
 
 class MailingList extends EventProvider implements ServiceManagerAwareInterface
 {
@@ -15,6 +16,11 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
      * @var MailingListMapper
      */
     protected $mailingListMapper;
+
+    /**
+     * @var SubscriptionMapper
+     */
+    protected $subscriptionMapper;
 
     /**
      * @var ServiceManager

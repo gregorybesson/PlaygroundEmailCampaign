@@ -70,7 +70,7 @@ class MailingList
     public function queryAll($sortArray = array())
     {
         $query = $this->em->createQuery(
-            'SELECT l FROM PlaygroundEmailCampaign\Entity\MailingList l'
+            'SELECT l FROM PlaygroundEmailCampaign\Entity\MailingList l '
             .( ! empty($sortArray) ? 'ORDER BY l.'.key($sortArray).' '.current($sortArray) : '' )
         );
         return $query;

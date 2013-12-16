@@ -42,11 +42,21 @@ return array(
     ),
     'router' => array(
         'routes' => array(
-//             'frontend' => array(
-//                 'child_routes' => array(
-
-//                 ),
-//             ),
+            'frontend' => array(
+                'child_routes' => array(
+                    'optin' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => 'optin',
+                            'defaults' => array(
+                                'controller' => 'playgroundemailcampaign_list',
+                                'action' => 'optin',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                    ),
+                ),
+            ),
             'admin' => array(
                 'child_routes' => array(
                     'email-campaign' => array(
@@ -54,7 +64,7 @@ return array(
                         'options' => array(
                             'route' => '/email-campaign',
                             'defaults' => array(
-                                'controller' => 'playgroundweatheradmin',
+                                'controller' => 'playgroundemailcampaign_admin_template',
                                 'action' => 'admin',
                             ),
                         ),

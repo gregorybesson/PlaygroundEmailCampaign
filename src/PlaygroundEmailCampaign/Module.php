@@ -67,6 +67,7 @@ class Module
                 'playgroundemailcampaign_mailinglist_service' => 'PlaygroundEmailCampaign\Service\MailingList',
                 'playgroundemailcampaign_campaign_service' => 'PlaygroundEmailCampaign\Service\Campaign',
                 'playgroundemailcampaign_contact_service' => 'PlaygroundEmailCampaign\Service\Contact',
+                'playgroundemailcampaign_facade_service' => 'PlaygroundEmailCampaign\Service\WebMailFacade',
 
                 'playgroundemailcampaign_mailchimp_service' => 'PlaygroundEmailCampaign\Service\MailChimpService',
             ),

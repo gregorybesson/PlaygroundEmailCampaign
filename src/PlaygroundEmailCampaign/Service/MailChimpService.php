@@ -22,10 +22,11 @@ class MailChimpService extends EventProvider implements ServiceManagerAwareInter
 
     public function getQueryURL()
     {
-        $key = $this->options->getUserKey();
-        $url = $this->options->getQueryURL();
+        $key = $this->getOptions()->getUserKey();
+        $url = $this->getOptions()->getQueryURL();
 
-        $url = str_replace('<dc>', end(split('-', $key), $url);
+        $keyParts = explode('-', $key);
+        $url = str_replace('<dc>', end($keyParts), $url);
         return $url;
     }
 

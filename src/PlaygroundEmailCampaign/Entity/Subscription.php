@@ -24,6 +24,11 @@ class Subscription implements InputFilterAwareInterface
 {
     protected $inputFilter;
 
+    const STATUS_PENDING = 1;
+    const STATUS_SUBSCRIBED = 2;
+    const STATUS_UNSUBSCRIBED = 3;
+    const STATUS_CLEARED = 4;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -46,9 +51,9 @@ class Subscription implements InputFilterAwareInterface
 
     // Only : pending, subscribed, unsubscribed, cleared
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="integer")
      */
-    protected $status= "pending";
+    protected $status= self::STATUS_PENDING;
 
     /**
      * @ORM\Column(type="datetime", name="created_at")

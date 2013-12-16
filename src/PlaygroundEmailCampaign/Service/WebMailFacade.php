@@ -23,11 +23,19 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
      */
     protected $serviceManager;
 
+    protected $webMailService;
+
     /**
      *
      * @var TemplateService
      */
     protected $templateService;
+
+    public function getQueryURL()
+    {
+        return $this->getWebMailService()->getQueryURL();
+    }
+
 
     //setUp si en local / changement de service
     // new service -> pour tous !!
@@ -77,6 +85,20 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
     public function setOptions(ModuleOptions $options)
     {
         $this->options = $options;
+        return $this;
+    }
+
+    public function getWebMailService()
+    {
+        if ($this->getOptions()->getService() == "MailChimp") {
+            $this->setWebMailService($this->getServiceManager()->get('playgroundemailcampaign_mailchimp_service'));
+        }
+        return $this->webMailService;
+    }
+
+    public function setWebMailService($webMailService)
+    {
+        $this->webMailService = $webMailService;
         return $this;
     }
 }

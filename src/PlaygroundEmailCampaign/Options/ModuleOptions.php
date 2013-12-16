@@ -19,6 +19,7 @@ class ModuleOptions extends AbstractOptions
 
     /**
      * web mail service name
+     * available values : MailChimp
      */
     protected $service = 'MailChimp';
 

@@ -2,6 +2,8 @@
 
 namespace PlaygroundEmailCampaign\Mapper;
 
+use Doctrine\ORM\AbstractQuery as Query;
+
 class Subscription
 {
     /**
@@ -86,6 +88,6 @@ class Subscription
             .( ! empty($sortArray) ? 'ORDER BY l.'.key($sortArray).' '.current($sortArray) : '' )
         );
         $query->setParameter('contact', $contact);
-        return $query;
+        return $query->getResult(Query::HYDRATE_OBJECT);
     }
 }
