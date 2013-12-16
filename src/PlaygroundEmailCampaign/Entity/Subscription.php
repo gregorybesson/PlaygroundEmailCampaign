@@ -48,7 +48,7 @@ class Subscription implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="string")
      */
-    protected $status;
+    protected $status= "pending";
 
     /**
      * @ORM\Column(type="datetime", name="created_at")

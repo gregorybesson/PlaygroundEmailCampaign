@@ -13,7 +13,10 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * @ORM\Entity @HasLifecycleCallbacks
- * @ORM\Table(name="emailcampaign_mailinglist")
+ * @ORM\Table(
+ *      name="emailcampaign_mailinglist",
+ *      uniqueConstraints={@UniqueConstraint(name="unique_name", columns={"name"})}
+ *      )
  */
 class MailingList implements InputFilterAwareInterface
 {
@@ -41,6 +44,11 @@ class MailingList implements InputFilterAwareInterface
      */
     private $subscriptions;
 
+    /**
+     * @ORM\Column(name="distant_id", type="integer", nullable=true)
+     */
+    protected $distantId;
+
     public function __construct()
     {
         $this->subscriptions = new ArrayCollection();
@@ -58,6 +66,9 @@ class MailingList implements InputFilterAwareInterface
         }
         if (isset($data['description']) && $data['description'] != null) {
             $this->description = $data['description'];
+        }
+        if (isset($data['distantId']) && $data['distantId'] != null) {
+            $this->distantId = $data['distantId'];
         }
     }
 
@@ -137,5 +148,14 @@ class MailingList implements InputFilterAwareInterface
     public function getSubscriptions()
     {
         return $this->subscriptions;
+    }
+
+    public function getDistantID() {
+        return $this->distantID;
+    }
+
+    public function setDistantID($distantID) {
+        $this->distantID = $distantID;
+        return $this;
     }
 }

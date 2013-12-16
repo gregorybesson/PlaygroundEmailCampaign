@@ -1,0 +1,35 @@
+<?php $this->plugin('translate')->setTranslatorTextDomain('playgroundemailcampaign');// Pour le texte ?>
+<ul class="liste-buttons">
+    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/lists/add'); ?>"><?php echo $this->translate('Ajouter une liste'); ?></a></li>
+</ul>
+<h2><?php echo $this->translate('Listes') ?></h2>
+    <table id="mailing_lists">
+        <thead>
+            <tr>
+                <th><?php echo $this->translate('Name') ?></th>
+                <th><?php echo $this->translate('Description') ?></th>
+                <th><?php echo $this->translate('contacts') ?></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach($this->lists as $list):?>
+            <tr>
+                <td><?php echo $list->getName(); ?></td>
+                <td><?php echo $list->getDescription(); ?></td>
+                <td><?php echo count($list->getSubscriptions()); ?></td>
+                <td></td>
+                <?php $editLink = $this->url('admin/email-campaign/lists/edit', array('listId' => $list->getId()));?>
+                <?php $deleteLink = $this->url('admin/email-campaign/lists/remove', array('listId' => $list->getId()));?>
+                <td>
+                    <a href='<?php echo $editLink ?>'><?php echo $this->translate('Edit'); ?></a>
+                    <a href='<?php echo $deleteLink ?>'><?php echo $this->translate('Remove'); ?></a>
+                </td>
+            </tr>
+        <?php endforeach;?>
+        </tbody>
+    </table>
+<ul class="liste-buttons">
+    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/lists/add'); ?>"><?php echo $this->translate('Ajouter une liste'); ?></a></li>
+</ul>

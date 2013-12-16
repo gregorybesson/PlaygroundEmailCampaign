@@ -21,6 +21,40 @@ class Campaign extends EventProvider implements ServiceManagerAwareInterface
      */
     protected $serviceManager;
 
+    public function create($campaign)
+    {
+        $campaign = $this->getCampaignMapper()->insert($campaign);
+        return $campaign;
+    }
+
+    public function edit($campaign)
+    {
+        if (!$campaign->getId()) {
+            return false;
+        }
+        $campaign = $this->getCampaignMapper()->update($campaign);
+        return $campaign;
+    }
+
+    public function remove($campaignId)
+    {
+        $campaignMapper = $this->getCampaignMapper();
+        $campaign = $campaignMapper->findById($campaignId);
+        if (!$campaign) {
+            return false;
+        }
+        // remove from WebMail
+
+        // remove from local
+        $campaignMapper->remove($campaign);
+        return true;
+    }
+
+    // function schedule sending -> call create emails
+
+    // fucntion send -> update email statuses
+
+    // function create emails
 
 
     public function getServiceManager()

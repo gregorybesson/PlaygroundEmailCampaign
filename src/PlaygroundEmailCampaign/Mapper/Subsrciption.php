@@ -67,4 +67,25 @@ class Subscription
         $this->em->flush();
     }
 
+    public function queryByList($list, $sortArray = array())
+    {
+        $query = $this->em->createQuery(
+            'SELECT s FROM PlaygroundEmailCampaign\Entity\Subscription s
+                WHERE mailingList = :list'
+            .( ! empty($sortArray) ? 'ORDER BY l.'.key($sortArray).' '.current($sortArray) : '' )
+        );
+        $query->setParameter('list', $list);
+        return $query;
+    }
+
+    public function queryByContact($contact, $sortArray = array())
+    {
+        $query = $this->em->createQuery(
+            'SELECT s FROM PlaygroundEmailCampaign\Entity\Subscription s
+                WHERE contact = :contact'
+            .( ! empty($sortArray) ? 'ORDER BY l.'.key($sortArray).' '.current($sortArray) : '' )
+        );
+        $query->setParameter('contact', $contact);
+        return $query;
+    }
 }

@@ -1,4 +1,4 @@
-<?php $this->plugin('translate')->setTranslatorTextDomain('playgroundweather');// Pour le texte ?>
+<?php $this->plugin('translate')->setTranslatorTextDomain('playgroundemailcampaign');// Pour le texte ?>
     <?php
     $form = $this->form;
     $form->prepare();
@@ -23,7 +23,7 @@
         <?php echo $this->formFile($form->get('htmlFile')); ?>
     </div>
     <?php if ($form->get('htmlFileURL')->getValue()) : ?>
-        <iframe src="$form->get('htmlFileURL')->getValue()">
+        <iframe src="<?php echo $form->get('htmlFileURL')->getValue(); ?>">
 
         </iframe>
     <?php endif; ?>

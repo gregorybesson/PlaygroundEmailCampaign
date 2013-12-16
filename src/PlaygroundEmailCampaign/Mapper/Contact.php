@@ -67,4 +67,13 @@ class Contact
         $this->em->flush();
     }
 
+    public function queryAll($sortArray = array())
+    {
+        $query = $this->em->createQuery(
+            'SELECT c FROM PlaygroundEmailCampaign\Entity\Contact c'
+            .( ! empty($sortArray) ? 'ORDER BY c.'.key($sortArray).' '.current($sortArray) : '' )
+        );
+        return $query;
+    }
+
 }

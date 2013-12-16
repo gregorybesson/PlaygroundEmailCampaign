@@ -29,6 +29,18 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
      */
     protected $templateService;
 
+    //setUp si en local / changement de service
+    // new service -> pour tous !!
+    //tout ceux qui n'ont pas de id distant : création sur le web mail
+
+
+    //dans l'autre sens : import depuis le web mail des entités
+
+    // init contact -> all users to contact
+
+    // createContact(pgUser)
+
+
     public function getTemplateService()
     {
         if ($this->templateService === null) {

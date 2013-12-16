@@ -15,7 +15,10 @@ use PlaygroundUser\Entity\User;
 
 /**
  * @ORM\Entity @HasLifecycleCallbacks
- * @ORM\Table(name="emailcampaign_contact")
+ * @ORM\Table(
+ *              name="emailcampaign_contact",
+ *              uniqueConstraints={@UniqueConstraint(name="contact_match_user", columns={"user_id"})}
+ *           )
  */
 class Contact implements InputFilterAwareInterface
 {
@@ -71,6 +74,11 @@ class Contact implements InputFilterAwareInterface
      */
     private $subscriptions;
 
+    /**
+     * @ORM\Column(name="distant_id", type="integer", nullable=true)
+     */
+    protected $distantId;
+
     public function preUpdate(PreUpdateEventArgs $event)
     {
         if ($event->hasChangedField('optin')) {
@@ -114,6 +122,9 @@ class Contact implements InputFilterAwareInterface
         }
         if (isset($data['emailType']) && $data['emailType'] != null) {
             $this->emailType = $data['emailType'];
+        }
+        if (isset($data['distantId']) && $data['distantId'] != null) {
+            $this->distantId = $data['distantId'];
         }
     }
 
@@ -250,4 +261,12 @@ class Contact implements InputFilterAwareInterface
         return $this->subscriptions;
     }
 
+    public function getDistantID() {
+        return $this->distantID;
+    }
+
+    public function setDistantID($distantID) {
+        $this->distantID = $distantID;
+        return $this;
+    }
 }

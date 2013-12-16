@@ -67,4 +67,13 @@ class Template
         $this->em->flush();
     }
 
+    public function queryAll($sortArray = array())
+    {
+        $query = $this->em->createQuery(
+            'SELECT t FROM PlaygroundEmailCampaign\Entity\Template t'
+            .( ! empty($sortArray) ? 'ORDER BY t.'.key($sortArray).' '.current($sortArray) : '' )
+        );
+        return $query;
+    }
+
 }

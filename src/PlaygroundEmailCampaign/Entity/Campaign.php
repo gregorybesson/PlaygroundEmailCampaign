@@ -9,6 +9,8 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Doctrine\ORM\Mapping\PrePersist;
+use Doctrine\ORM\Mapping\PreUpdate;
 
 /**
  * @ORM\Entity @HasLifecycleCallbacks
@@ -57,7 +59,7 @@ class Campaign implements InputFilterAwareInterface
     protected $template;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Mailinglist", inversedBy="campaigns", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="MailingList", inversedBy="campaigns", cascade={"persist"})
      * @ORM\JoinColumn(name="mailing_list_id", referencedColumnName="id")
      */
     protected $mailingList;
@@ -77,6 +79,37 @@ class Campaign implements InputFilterAwareInterface
      */
     protected $unsubscribeURL;
 
+    /**
+     * @ORM\Column(name="distant_id", type="integer", nullable=true)
+     */
+    protected $distantId;
+
+    /**
+     * @ORM\Column(type="datetime", name="created_at")
+     */
+    protected $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", name="updated_at")
+     */
+    protected $updatedAt;
+
+    /**
+     * @PrePersist
+     */
+    public function createChrono()
+    {
+        $this->createdAt = new \DateTime("now");
+        $this->updatedAt = new \DateTime("now");
+    }
+
+    /**
+     * @PreUpdate
+     */
+    public function updateChrono()
+    {
+        $this->updatedAt = new \DateTime("now");
+    }
 
     public function getArrayCopy()
     {
@@ -114,6 +147,9 @@ class Campaign implements InputFilterAwareInterface
         }
         if (isset($data['unsubscribeURL']) && $data['unsubscribeURL'] != null) {
             $this->unsubscribeURL = $data['unsubscribeURL'];
+        }
+        if (isset($data['distantId']) && $data['distantId'] != null) {
+            $this->distantId = $data['distantId'];
         }
     }
 
@@ -318,4 +354,32 @@ class Campaign implements InputFilterAwareInterface
         $this->unsubscribeURL = $unsubscribeURL;
         return $this;
     }
-}
+
+    public function getDistantID() {
+        return $this->distantID;
+    }
+
+    public function setDistantID($distantID) {
+        $this->distantID = $distantID;
+        return $this;
+    }
+
+
+	public function getCreatedAt() {
+		return $this->createdAt;
+	}
+
+	public function setCreatedAt($createdAt) {
+		$this->createdAt = $createdAt;
+		return $this;
+	}
+
+	public function getUpdatedAt() {
+		return $this->updatedAt;
+	}
+
+	public function setUpdatedAt($updatedAt) {
+		$this->updatedAt = $updatedAt;
+		return $this;
+	}
+	}

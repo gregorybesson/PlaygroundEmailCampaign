@@ -34,9 +34,15 @@ class Template implements InputFilterAwareInterface
     protected $title;
 
     /**
-     * @ORM\Column(name="html_file_url", type="string")
+     * @ORM\Column(name="html_file_url", type="string", nullable=true)
      */
     protected $htmlFileURL;
+
+    // Id dans la base du web mail
+    /**
+     * @ORM\Column(name="distant_id", type="integer", nullable=true)
+     */
+    protected $distantID;
 
     public function getId()
     {
@@ -71,6 +77,15 @@ class Template implements InputFilterAwareInterface
         return $this;
     }
 
+    public function getDistantID() {
+        return $this->distantID;
+    }
+
+    public function setDistantID($distantID) {
+        $this->distantID = $distantID;
+        return $this;
+    }
+
     public function getArrayCopy()
     {
         return get_object_vars($this);
@@ -83,6 +98,9 @@ class Template implements InputFilterAwareInterface
         }
         if (isset($data['htmlFileURL']) && $data['htmlFileURL'] != null) {
             $this->htmlFileURL = $data['htmlFileURL'];
+        }
+        if (isset($data['distantId']) && $data['distantId'] != null) {
+            $this->distantId = $data['distantId'];
         }
     }
 
@@ -107,9 +125,6 @@ class Template implements InputFilterAwareInterface
                 'name' => 'htmlFileURL',
                 'required' => false,
                 'allowEmpty' => true,
-                'validators' => array(
-                    array('name' => 'NotEmpty',),
-                ),
             )));
 
             $this->inputFilter = $inputFilter;

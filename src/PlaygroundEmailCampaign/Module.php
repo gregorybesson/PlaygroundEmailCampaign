@@ -66,6 +66,7 @@ class Module
                 'playgroundemailcampaign_template_service' => 'PlaygroundEmailCampaign\Service\Template',
                 'playgroundemailcampaign_mailinglist_service' => 'PlaygroundEmailCampaign\Service\MailingList',
                 'playgroundemailcampaign_campaign_service' => 'PlaygroundEmailCampaign\Service\Campaign',
+                'playgroundemailcampaign_contact_service' => 'PlaygroundEmailCampaign\Service\Contact',
 
                 'playgroundemailcampaign_mailchimp_service' => 'PlaygroundEmailCampaign\Service\MailChimpService',
             ),
@@ -116,6 +117,20 @@ class Module
                     $form = new Form\Admin\Template(null, $sm, $translator);
                     $template = new \PlaygroundEmailCampaign\Entity\Template();
                     $form->setInputFilter($template->getInputFilter());
+                    return $form;
+                },
+                'playgroundemailcampaign_mailinglist_form' => function  ($sm) {
+                    $translator = $sm->get('translator');
+                    $form = new Form\Admin\MailingList(null, $sm, $translator);
+//                     $template = new \PlaygroundEmailCampaign\Entity\MailingList();
+//                     $form->setInputFilter($template->getInputFilter());
+                    return $form;
+                },
+                'playgroundemailcampaign_campaign_form' => function  ($sm) {
+                    $translator = $sm->get('translator');
+                    $form = new Form\Admin\Campaign(null, $sm, $translator);
+                    $campaign = new \PlaygroundEmailCampaign\Entity\Campaign();
+                    $form->setInputFilter($campaign->getInputFilter());
                     return $form;
                 },
             ),

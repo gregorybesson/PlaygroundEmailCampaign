@@ -82,7 +82,7 @@ return array(
                                         ),
                                     ),
                                     'edit' => array(
-                                        'type' => 'Literal',
+                                        'type' => 'Segment',
                                         'options' => array(
                                             'route' => '/edit/:templateId',
                                             'constraints' => array(
@@ -94,10 +94,166 @@ return array(
                                             ),
                                         ),
                                     ),
+                                    'remove' => array(
+                                        'type' => 'Segment',
+                                        'options' => array(
+                                            'route' => '/remove/:templateId',
+                                            'constraints' => array(
+                                                ':templateId' => '[0-9]+',
+                                            ),
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_template',
+                                                'action' => 'remove',
+                                            ),
+                                        ),
+                                    ),
                                 ),
+                            ),
+
+                            'lists' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/lists',
+                                    'defaults' => array(
+                                        'controller' => 'playgroundemailcampaign_admin_list',
+                                        'action' => 'list',
+                                    ),
+                                ),
+                                'may_terminate' => true,
+                                'child_routes' => array(
+                                    'add' => array(
+                                        'type' => 'Literal',
+                                        'options' => array(
+                                            'route' => '/add',
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_list',
+                                                'action' => 'add',
+                                            ),
+                                        ),
+                                    ),
+                                    'edit' => array(
+                                        'type' => 'Segment',
+                                        'options' => array(
+                                            'route' => '/edit/:listId',
+                                            'constraints' => array(
+                                                ':listId' => '[0-9]+',
+                                            ),
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_list',
+                                                'action' => 'edit',
+                                            ),
+                                        ),
+                                    ),
+                                    'remove' => array(
+                                        'type' => 'Segment',
+                                        'options' => array(
+                                            'route' => '/remove/:listId',
+                                            'constraints' => array(
+                                                ':listId' => '[0-9]+',
+                                            ),
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_list',
+                                                'action' => 'remove',
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            ),
+
+                            'campaigns' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/campaigns',
+                                    'defaults' => array(
+                                        'controller' => 'playgroundemailcampaign_admin_campaign',
+                                        'action' => 'list',
+                                    ),
+                                ),
+                                'may_terminate' => true,
+                                'child_routes' => array(
+                                    'add' => array(
+                                        'type' => 'Literal',
+                                        'options' => array(
+                                            'route' => '/add',
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_campaign',
+                                                'action' => 'add',
+                                            ),
+                                        ),
+                                    ),
+                                    'edit' => array(
+                                        'type' => 'Segment',
+                                        'options' => array(
+                                            'route' => '/edit/:campaignId',
+                                            'constraints' => array(
+                                                ':campaignId' => '[0-9]+',
+                                            ),
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_campaign',
+                                                'action' => 'edit',
+                                            ),
+                                        ),
+                                    ),
+                                    'remove' => array(
+                                        'type' => 'Segment',
+                                        'options' => array(
+                                            'route' => '/remove/:campaignId',
+                                            'constraints' => array(
+                                                ':campaignId' => '[0-9]+',
+                                            ),
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_campaign',
+                                                'action' => 'remove',
+                                            ),
+                                        ),
+                                    ),
+                                ),
+
                             ),
                         ),
                     ),
+                ),
+            ),
+        ),
+    ),
+    'navigation' => array(
+        'admin' => array(
+            'playgroundemailcampaign' => array(
+                'label' => 'Email Campaigns',
+                'route' => 'admin/email-campaign',
+                'resource' => 'emailcampaign',
+                'privilege' => 'list',
+                'pages' => array(
+                    'list-templates' => array(
+                        'label' => 'Templates',
+                        'route' => 'admin/email-campaign/templates',
+                        'resource' => 'emailcampaign',
+                        'privilege' => 'list',
+                    ),
+                    'list-lists' => array(
+                        'label' => 'Lists',
+                        'route' => 'admin/email-campaign/lists',
+                        'resource' => 'emailcampaign',
+                        'privilege' => 'list',
+                    ),
+                    'list-campaigns' => array(
+                        'label' => 'Campaigns',
+                        'route' => 'admin/email-campaign/campaigns',
+                        'resource' => 'emailcampaign',
+                        'privilege' => 'list',
+                    ),
+//                     'list-contacts' => array(
+//                         'label' => 'Contacts',
+//                         'route' => 'admin/email-campaign/contacts',
+//                         'resource' => 'emailcampaign',
+//                         'privilege' => 'list',
+//                     ),
+//                     'tracking-data' => array(
+//                         'label' => 'Tracking',
+//                         'route' => 'admin/email-campaign/tracking',
+//                         'resource' => 'emailcampaign',
+//                         'privilege' => 'list',
+//                     ),
                 ),
             ),
         ),

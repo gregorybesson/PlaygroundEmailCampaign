@@ -1,1 +1,32 @@
-<?php
+<?php $this->plugin('translate')->setTranslatorTextDomain('playgroundemailcampaign');// Pour le texte ?>
+<ul class="liste-buttons">
+    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/templates/add'); ?>"><?php echo $this->translate('Ajouter un template'); ?></a></li>
+</ul>
+<h2><?php echo $this->translate('Templates') ?></h2>
+    <table id="templates">
+        <thead>
+            <tr>
+                <th><?php echo $this->translate('Title') ?></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach($this->templates as $template):?>
+            <tr>
+                <td><?php echo $template->getTitle(); ?></td>
+                <td></td>
+                <?php $editLink = $this->url('admin/email-campaign/templates/edit', array('templateId' => $template->getId()));?>
+                <?php $deleteLink = $this->url('admin/email-campaign/templates/remove', array('templateId' => $template->getId()));?>
+                <td>
+                    <a href='<?php echo $editLink ?>'><?php echo $this->translate('Edit'); ?></a>
+                    <a href='<?php echo $deleteLink ?>'><?php echo $this->translate('Remove'); ?></a>
+                </td>
+            </tr>
+        <?php endforeach;?>
+        </tbody>
+    </table>
+<ul class="liste-buttons">
+    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/templates/add'); ?>"><?php echo $this->translate('Ajouter un template'); ?></a></li>
+</ul>
+

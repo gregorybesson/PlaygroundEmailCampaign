@@ -32,7 +32,56 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
         return $this;
     }
 
+    public function create(array $data)
+    {
+        $mailingList = new MailingListEntity();
+        $mailingList->populate($data);
+        var_dump('creating');
+        $mailingList = $this->getMailingListMapper()->insert($mailingList);
 
+        var_dump($mailingList);
+        if (!$mailingList) {
+            return false;
+        }
+        return $this->update($mailingList->getId(), $data);
+    }
+
+    public function edit($mailingListId, array $data)
+    {
+        return $this->update($mailingListId, $data);
+    }
+
+    public function update($mailingListId, array $data)
+    {
+        $mailingList = $this->getMailingListMapper()->findById($mailingListId);
+        if (!$mailingList) {
+            return false;
+        }
+        $mailingList->populate($data);
+
+        //handle subscriptions !
+
+        //create/updata distant
+
+        $this->getMailingListMapper()->update($mailingList);
+
+        return $mailingList;
+    }
+
+    public function remove($mailingListId) {
+        $mailingListMapper = $this->getMailingListMapper();
+        $mailingList = $mailingListMapper->findById($mailingListId);
+        if (!$mailingList) {
+            return false;
+        }
+
+        //remove from distant
+
+        $mailingListMapper->remove($mailingList);
+        return true;
+    }
+
+    // do not allow to create a subscription if user is in optout
 
     public function getMailingListMapper()
     {
@@ -45,6 +94,20 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
     public function setMailingListMapper($mailingListMapper)
     {
         $this->mailingListMapper = $mailingListMapper;
+        return $this;
+    }
+
+    public function getSubscriptionMapper()
+    {
+        if (null === $this->subscriptionMapper) {
+            $this->subscriptionMapper = $this->getServiceManager()->get('playgroundemailcampaign_subscription_mapper');
+        }
+        return $this->subscriptionMapper;
+    }
+
+    public function setSubscriptionMapper($subscriptionMapper)
+    {
+        $this->subscriptionMapper = $subscriptionMapper;
         return $this;
     }
 }

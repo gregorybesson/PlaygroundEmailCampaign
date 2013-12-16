@@ -5,9 +5,11 @@ namespace PlaygroundEmailCampaign\Service;
 use ZfcBase\EventManager\EventProvider;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\Stdlib\ErrorHandler;
 
 use PlaygroundEmailCampaign\Entity\Template as TemplateEntity;
 use PlaygroundEmailCampaign\Mapper\Template as TemplateMapper;
+use PlaygroundEmailCampaign\Options\ModuleOptions;
 
 class Template extends EventProvider implements ServiceManagerAwareInterface
 {
@@ -47,21 +49,23 @@ class Template extends EventProvider implements ServiceManagerAwareInterface
         return $this->update($template->getId(), $data);
     }
 
-    public function update($templateId, array $data)
+    public function update($templateId, $data)
     {
         $template = $this->getTemplateMapper()->findById($templateId);
 
         // Handle Image upload
-        if (!empty($data['fileHtml']['tmp_name'])) {
+        if (!empty($data['htmlFile']['tmp_name'])) {
+            var_dump($data['htmlFile']['tmp_name']);
             $path = $this->getOptions()->getMediaPath() . DIRECTORY_SEPARATOR;
             $real_media_path = realpath($path) . DIRECTORY_SEPARATOR;
             $media_url = $this->getOptions()->getMediaUrl() . '/';
 
-            $oldTemplateURL = $template->getFileHtmlURL();
+            $oldTemplateURL = $template->getHtmlFileURL();
             ErrorHandler::start();
-            $data['image']['name'] = 'template-' . $templateId . "-" . $data['fileHtml']['name'];
-            move_uploaded_file($data['fileHtml']['tmp_name'], $path . $data['fileHtml']['name']);
-            $template->setImageURl($media_url . $data['fileHtml']['name']);
+            $data['htmlFile']['name'] = 'template-' . $template->getId() . "-" . $data['htmlFile']['name'];
+            var_dump(move_uploaded_file($data['htmlFile']['tmp_name'], $path . $data['htmlFile']['name']));
+            $template->setHtmlFileURL($media_url . $data['htmlFile']['name']);
+            var_dump($template);
             ErrorHandler::stop(true);
 
             if ($oldTemplateURL) {
@@ -69,14 +73,34 @@ class Template extends EventProvider implements ServiceManagerAwareInterface
                 unlink(str_replace($media_url, $real_media_path, $oldTemplateURL));
             }
         }
-        // handle witten code
+        // handle written code
 
-        $template->populate($data);
-        $this->getTemplateMapper()->update($template);
 
-        // After saving in our own database, we need to save updates in the web mail's database
+        // Save updates in the web mail's database
+
+        // Save in our own database
+        $this->getTemplateMapper()->insert($template);
 
         return $template;
+    }
+
+    public function remove($templateId) {
+        $templateMapper = $this->getTemplateMapper();
+        $template = $templateMapper->findById($templateId);
+        if (!$template) {
+            return false;
+        }
+        if ($template->getHtmlFileURL()) {
+            $path = $this->getOptions()->getMediaPath() . DIRECTORY_SEPARATOR;
+            $real_media_path = realpath($path) . DIRECTORY_SEPARATOR;
+            $media_url = $this->getOptions()->getMediaUrl() . '/';
+            unlink(str_replace($media_url, $real_media_path, $template->getHtmlFileURL()));
+        }
+        // remove from WebMail
+
+        // remove from local
+        $templateMapper->remove($template);
+        return true;
     }
 
     public function getServiceManager()

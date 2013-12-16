@@ -1,0 +1,70 @@
+<?php $this->plugin('translate')->setTranslatorTextDomain('playgroundemailcampaign');// Pour le texte ?>
+    <?php
+    $form = $this->form;
+    $form->prepare();
+    ?>
+
+<h2><?php echo $this->translate('Create a campaign'); ?></h2>
+<?php echo $this->form()->openTag($form) ?>
+
+    <div class="label-input">
+        <?php echo $this->formHidden($form->get('id')); ?>
+    </div>
+    <div class="label-input">
+        <?php echo $this->formLabel($form->get('name')); ?>
+        <?php echo $this->formInput($form->get('name')); ?>
+    </div>
+    <div class="label-input">
+        <?php echo $this->formLabel($form->get('description')); ?>
+        <?php echo $this->formInput($form->get('description')); ?>
+    </div>
+    <div class="label-input">
+        <?php echo $this->formLabel($form->get('fromName')); ?>
+        <?php echo $this->formInput($form->get('fromName')); ?>
+    </div>
+    <div class="label-input">
+        <?php echo $this->formLabel($form->get('fromEmail')); ?>
+        <?php echo $this->formInput($form->get('fromEmail')); ?>
+    </div>
+    <div class="label-input">
+        <?php echo $this->formLabel($form->get('subject')); ?>
+        <?php echo $this->formInput($form->get('subject')); ?>
+    </div>
+    <div class="label-input">
+        <?php echo $this->formLabel($form->get('isTracked')); ?>
+        <?php echo $this->formSelect($form->get('isTracked')); ?>
+    </div>
+    <div id="trackingURL" class="label-input">
+        <?php echo $this->formLabel($form->get('trackingURL')); ?>
+        <?php echo $this->formInput($form->get('trackingURL')); ?>
+    </div>
+    <div class="label-input">
+        <?php echo $this->formLabel($form->get('unsubscribeURL')); ?>
+        <?php echo $this->formInput($form->get('unsubscribeURL')); ?>
+    </div>
+    <div class="label-input">
+        <?php echo $this->formLabel($form->get('template')); ?>
+        <?php echo $this->formSelect($form->get('template')); ?>
+    </div>
+    <div class="label-input">
+        <?php echo $this->formLabel($form->get('mailingList')); ?>
+        <?php echo $this->formSelect($form->get('mailingList')); ?>
+    </div>
+
+    <?php echo $this->formButton($form->get('submit')); ?>
+<?php echo $this->form()->closeTag() ?>
+
+<script type="text/javascript">
+    var updateForm = function() {
+        if ($('#isTracked').val() == '1' ){
+            $('#trackingURL').show();
+        }
+        if ($('#isTracked').val() == '0' ){
+            $('#trackingURL').hide();
+        }
+    }
+    updateForm();
+    $('#isTracked').change(function() {
+        updateForm();
+    });
+</script>
