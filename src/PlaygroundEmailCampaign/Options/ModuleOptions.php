@@ -4,7 +4,6 @@ namespace PlaygroundEmailCampaign\Options;
 
 use Zend\Stdlib\AbstractOptions;
 
-
 class ModuleOptions extends AbstractOptions
 {
     /**
@@ -27,11 +26,6 @@ class ModuleOptions extends AbstractOptions
      * web mail user API Key
      */
     protected $userKey = '999f451057b5f5fbfb3bda744d9ffaf6-us3';
-
-    /**
-     * web mail API url
-     */
-    protected $queryURL = 'https://<dc>.api.mailchimp.com/2.0/';
 
     public function setMediaPath($media_path)
     {
@@ -85,14 +79,4 @@ class ModuleOptions extends AbstractOptions
         return $this;
     }
 
-    public function getQueryURL()
-    {
-        return $this->queryURL;
-    }
-
-    public function setQueryURL($queryURL)
-    {
-        $this->queryURL = $queryURL;
-        return $this;
-    }
 }

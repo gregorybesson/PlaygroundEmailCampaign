@@ -53,12 +53,12 @@ class Template extends EventProvider implements ServiceManagerAwareInterface
     {
         $template = $this->getTemplateMapper()->findById($templateId);
 
+        $path = $this->getOptions()->getMediaPath() . DIRECTORY_SEPARATOR;
+        $real_media_path = realpath($path) . DIRECTORY_SEPARATOR;
+        $media_url = $this->getOptions()->getMediaUrl() . '/';
+
         // Handle Image upload
         if (!empty($data['htmlFile']['tmp_name'])) {
-            $path = $this->getOptions()->getMediaPath() . DIRECTORY_SEPARATOR;
-            $real_media_path = realpath($path) . DIRECTORY_SEPARATOR;
-            $media_url = $this->getOptions()->getMediaUrl() . '/';
-
             $oldTemplateURL = $template->getHtmlFileURL();
             ErrorHandler::start();
             $data['htmlFile']['name'] = 'template-' . $template->getId() . "-" . $data['htmlFile']['name'];
@@ -77,11 +77,8 @@ class Template extends EventProvider implements ServiceManagerAwareInterface
                 $fileName = $template->getId() . "-" . $template->getTitle() . '.html';
                 $template->setHtmlFileURL($media_url . $fileName);
             }
-            var_dump('file exists', file_exists($template->getHtmlFileURL()));
-            $file = fopen($template->getHtmlFileURL(), 'w');
             // write content to file
-
-            fclose($file);
+            file_put_contents(str_replace($media_url, $real_media_path, $template->getHtmlFileURL()), $data['htmlContent']);
         }
 
         // Save updates in the web mail's database

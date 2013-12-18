@@ -81,8 +81,7 @@ class Campaign
         $query = $this->em->createQuery(
             'SELECT DISTINCT sub.contact FROM PlaygroundEmailCampaign\Entity\Campaign AS c
                 JOIN c.mailingList AS list JOIN list.subscription as sub
-                WHERE c = :campaign
-//                 AND
+                WHERE c = :campaign '
             .( ! empty($sortArray) ? 'ORDER BY c.'.key($sortArray).' '.current($sortArray) : '' )
         );
         return $query;

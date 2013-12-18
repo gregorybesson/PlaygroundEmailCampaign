@@ -67,16 +67,20 @@ class TemplateController extends AbstractActionController
             $media_url = $this->getTemplateService()->getOptions()->getMediaUrl() . DIRECTORY_SEPARATOR;
             $path = $this->getTemplateService()->getOptions()->getMediaPath() . DIRECTORY_SEPARATOR;
             $real_media_path = realpath($path) . DIRECTORY_SEPARATOR;
-            $content = fopen(str_replace($media_url, $real_media_path, $template->getHtmlFileURL()), 'r');
             $doc = new \DOMDocument();
             $doc->loadHTMLFile(str_replace($media_url, $real_media_path, $template->getHtmlFileURL()));
-            var_dump($content);
-            if ($content) {
-                $htmlContent = $content;
-                $preview = (string) $doc->getElementsByTagName('body')->item(0)->C14N();
+            if ($doc) {
+                $preview_content = '';
+                foreach ($doc->getElementsByTagName('body')->item(0)->childNodes as $child) {
+                    $preview_content .= $child->C14N();
+                }
+                $preview_attributes = '';
+                foreach ($doc->getElementsByTagName('body')->item(0)->attributes as $attr) {
+                    $preview_attributes .= $attr->name . '="' . $attr->value . '" ';
+                }
             }
         }
-        $form->get('htmlContent')->setValue($htmlContent);
+        $form->get('htmlContent')->setValue($doc->C14N());
 
         if ($this->getRequest()->isPost()) {
             $data = array_replace_recursive(
@@ -86,7 +90,9 @@ class TemplateController extends AbstractActionController
 
             $form->setData($data);
             if ($form->isValid()) {
-                $template = $this->getTemplateService()->edit($template->getId(), $form->getData()->getArrayCopy());
+                $data = array_replace_recursive($data, $form->getData()->getArrayCopy());
+                var_dump($data);
+                $template = $this->getTemplateService()->edit($template->getId(), $data);
                 if ($template) {
                     return $this->redirect()->toRoute('admin/email-campaign/templates');
                 }
@@ -104,7 +110,8 @@ class TemplateController extends AbstractActionController
             array(
                 'form' => $form,
                 'flashMessages' => $this->flashMessenger()->getMessages(),
-                'preview' => $preview,
+                'preview_attributes' => $preview_attributes,
+                'preview_content' => $preview_content,
             )
         );
         return $viewModel;

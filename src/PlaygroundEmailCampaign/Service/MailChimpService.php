@@ -7,6 +7,7 @@ use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 
 use PlaygroundEmailCampaign\Options\ModuleOptions;
+use Assetic\Exception\Exception;
 
 class MailChimpService extends EventProvider implements ServiceManagerAwareInterface
 {
@@ -20,14 +21,30 @@ class MailChimpService extends EventProvider implements ServiceManagerAwareInter
      */
     protected $serviceManager;
 
-    public function getQueryURL()
+    /**
+     * @var \Mailchimp
+     */
+    protected $mc;
+
+    public function __construct()
     {
         $key = $this->getOptions()->getUserKey();
-        $url = $this->getOptions()->getQueryURL();
+        try {
+            $this->mc = new \Mailchimp($key);
+        } catch (Mailchimp_Error $e) {
+            throw new \Exception('No API key provided');
+        }
+    }
 
-        $keyParts = explode('-', $key);
-        $url = str_replace('<dc>', end($keyParts), $url);
-        return $url;
+    /***TEMPLATES***/
+    public function addTemplate($title, $htmlStructure)
+    {
+        $this->mc->templates->add($title, $htmlStructure);
+    }
+
+    public function updateTemplate($title, $htmlStructure)
+    {
+        $this->mc->templates->update($title, $htmlStructure);
     }
 
     public function getOptions()
@@ -52,6 +69,17 @@ class MailChimpService extends EventProvider implements ServiceManagerAwareInter
     public function setServiceManager(ServiceManager $serviceManager)
     {
         $this->serviceManager = $serviceManager;
+        return $this;
+    }
+
+    public function getMc()
+    {
+        return $this->mc;
+    }
+
+    public function setMc(\Mailchimp $mc)
+    {
+        $this->mc = $mc;
         return $this;
     }
 }

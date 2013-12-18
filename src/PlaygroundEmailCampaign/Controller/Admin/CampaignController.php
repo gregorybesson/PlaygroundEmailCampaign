@@ -84,7 +84,7 @@ class CampaignController extends AbstractActionController
                 foreach ($form->getMessages() as $field => $errMsg) {
                     $this->flashMessenger()->addMessage($field . ' - ' . current($errMsg));
                 }
-                return $this->redirect()->toRoute('admin/email-campaign/campaigns/edit', array('campaignId' => $campaign->getId())));
+                return $this->redirect()->toRoute('admin/email-campaign/campaigns/edit', array('campaignId' => $campaign->getId()));
             }
         }
 
