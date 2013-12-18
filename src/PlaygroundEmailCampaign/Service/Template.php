@@ -55,7 +55,6 @@ class Template extends EventProvider implements ServiceManagerAwareInterface
 
         // Handle Image upload
         if (!empty($data['htmlFile']['tmp_name'])) {
-            var_dump($data['htmlFile']['tmp_name']);
             $path = $this->getOptions()->getMediaPath() . DIRECTORY_SEPARATOR;
             $real_media_path = realpath($path) . DIRECTORY_SEPARATOR;
             $media_url = $this->getOptions()->getMediaUrl() . '/';
@@ -63,9 +62,7 @@ class Template extends EventProvider implements ServiceManagerAwareInterface
             $oldTemplateURL = $template->getHtmlFileURL();
             ErrorHandler::start();
             $data['htmlFile']['name'] = 'template-' . $template->getId() . "-" . $data['htmlFile']['name'];
-            var_dump(move_uploaded_file($data['htmlFile']['tmp_name'], $path . $data['htmlFile']['name']));
             $template->setHtmlFileURL($media_url . $data['htmlFile']['name']);
-            var_dump($template);
             ErrorHandler::stop(true);
 
             if ($oldTemplateURL) {
@@ -74,7 +71,18 @@ class Template extends EventProvider implements ServiceManagerAwareInterface
             }
         }
         // handle written code
+        elseif ($data['htmlContent'] !== null) {
+            if (!$template->getHtmlFileURL()) {
+                // need to slugify the title !!
+                $fileName = $template->getId() . "-" . $template->getTitle() . '.html';
+                $template->setHtmlFileURL($media_url . $fileName);
+            }
+            var_dump('file exists', file_exists($template->getHtmlFileURL()));
+            $file = fopen($template->getHtmlFileURL(), 'w');
+            // write content to file
 
+            fclose($file);
+        }
 
         // Save updates in the web mail's database
 

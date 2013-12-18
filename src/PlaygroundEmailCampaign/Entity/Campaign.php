@@ -65,7 +65,7 @@ class Campaign implements InputFilterAwareInterface
     protected $mailingList;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", name="is_tracked")
      */
     protected $isTracked;
 
@@ -83,6 +83,16 @@ class Campaign implements InputFilterAwareInterface
      * @ORM\Column(name="distant_id", type="integer", nullable=true)
      */
     protected $distantId;
+
+    /**
+     * @ORM\Column(type="boolean", name="is_sent")
+     */
+    protected $isSent;
+
+    /**
+     * @ORM\Column(type="datetime", name="sending_time")
+     */
+    protected $sendingTime;
 
     /**
      * @ORM\Column(type="datetime", name="created_at")
@@ -355,31 +365,58 @@ class Campaign implements InputFilterAwareInterface
         return $this;
     }
 
-    public function getDistantID() {
+    public function getDistantID()
+    {
         return $this->distantID;
     }
 
-    public function setDistantID($distantID) {
+    public function setDistantID($distantID)
+    {
         $this->distantID = $distantID;
         return $this;
     }
 
+    public function getIsSent()
+    {
+        return $this->isSent;
+    }
 
-	public function getCreatedAt() {
-		return $this->createdAt;
-	}
+    public function setIsSent($isSent)
+    {
+        $this->isSent = $isSent;
+        return $this;
+    }
 
-	public function setCreatedAt($createdAt) {
-		$this->createdAt = $createdAt;
-		return $this;
-	}
+    public function getSendingTime()
+    {
+        return $this->sendingTime;
+    }
 
-	public function getUpdatedAt() {
-		return $this->updatedAt;
-	}
+    public function setSendingTime($sendingTime)
+    {
+        $this->sendingTime = $sendingTime;
+        return $this;
+    }
 
-	public function setUpdatedAt($updatedAt) {
-		$this->updatedAt = $updatedAt;
-		return $this;
-	}
-	}
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
+}

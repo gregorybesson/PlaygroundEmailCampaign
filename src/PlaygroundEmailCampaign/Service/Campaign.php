@@ -51,8 +51,16 @@ class Campaign extends EventProvider implements ServiceManagerAwareInterface
     }
 
     // function schedule sending -> call create emails
+    public function schedule($time)
+    {
+
+    }
 
     // fucntion send -> update email statuses
+    public function send()
+    {
+
+    }
 
     // function create emails
 

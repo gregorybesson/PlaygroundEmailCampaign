@@ -59,6 +59,10 @@ class CampaignController extends AbstractActionController
             return $this->redirect()->toRoute('admin/email-campaign/campaigns');
         }
         $campaign = $this->getCampaignService()->getCampaignMapper()->findById($campaignId);
+        if ($campaign->getIsSent()) {
+            $this->flashMessenger()->addMessage('This campaign as been sent already, you can not modify it anymore');
+                    return $this->redirect()->toRoute('admin/email-campaign/campaigns');
+        }
         $form = $this->getServiceLocator()->get('playgroundemailcampaign_campaign_form');
         $form->get('submit')->setLabel("Enregistrer");
         $form->setAttribute('action', '');
@@ -80,7 +84,7 @@ class CampaignController extends AbstractActionController
                 foreach ($form->getMessages() as $field => $errMsg) {
                     $this->flashMessenger()->addMessage($field . ' - ' . current($errMsg));
                 }
-                return $this->redirect()->toRoute('admin/email-campaign/campaigns/add');
+                return $this->redirect()->toRoute('admin/email-campaign/campaigns/edit', array('campaignId' => $campaign->getId())));
             }
         }
 
@@ -124,6 +128,14 @@ class CampaignController extends AbstractActionController
 
         return new ViewModel(array(
             'campaigns' => $paginator,
+            'flashMessages' => $this->flashMessenger()->getMessages(),
+        ));
+    }
+
+    public function scheduleAction()
+    {
+
+        return new ViewModel(array(
             'flashMessages' => $this->flashMessenger()->getMessages(),
         ));
     }

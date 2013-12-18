@@ -61,6 +61,23 @@ class TemplateController extends AbstractActionController
         $form->setAttribute('action', '');
         $form->bind($template);
 
+        $htmlContent = '';
+        $preview = '';
+        if ($template->getHtmlFileURL()) {
+            $media_url = $this->getTemplateService()->getOptions()->getMediaUrl() . DIRECTORY_SEPARATOR;
+            $path = $this->getTemplateService()->getOptions()->getMediaPath() . DIRECTORY_SEPARATOR;
+            $real_media_path = realpath($path) . DIRECTORY_SEPARATOR;
+            $content = fopen(str_replace($media_url, $real_media_path, $template->getHtmlFileURL()), 'r');
+            $doc = new \DOMDocument();
+            $doc->loadHTMLFile(str_replace($media_url, $real_media_path, $template->getHtmlFileURL()));
+            var_dump($content);
+            if ($content) {
+                $htmlContent = $content;
+                $preview = (string) $doc->getElementsByTagName('body')->item(0)->C14N();
+            }
+        }
+        $form->get('htmlContent')->setValue($htmlContent);
+
         if ($this->getRequest()->isPost()) {
             $data = array_replace_recursive(
                 $this->getRequest()->getPost()->toArray(),
@@ -77,7 +94,7 @@ class TemplateController extends AbstractActionController
                 foreach ($form->getMessages() as $field => $errMsg) {
                     $this->flashMessenger()->addMessage($field . ' - ' . current($errMsg));
                 }
-                return $this->redirect()->toRoute('admin/email-campaign/templates/add');
+                return $this->redirect()->toRoute('admin/email-campaign/templates/edit', array('templateId' => $template->getId()));
             }
         }
 
@@ -87,6 +104,7 @@ class TemplateController extends AbstractActionController
             array(
                 'form' => $form,
                 'flashMessages' => $this->flashMessenger()->getMessages(),
+                'preview' => $preview,
             )
         );
         return $viewModel;

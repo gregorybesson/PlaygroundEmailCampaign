@@ -36,6 +36,10 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
         return $this->getWebMailService()->getQueryURL();
     }
 
+    public function init()
+    {
+        // stuffs
+    }
 
     //setUp si en local / changement de service
     // new service -> pour tous !!

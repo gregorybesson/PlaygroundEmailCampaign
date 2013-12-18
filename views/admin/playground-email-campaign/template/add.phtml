@@ -22,11 +22,10 @@
     <div class="label-input">
         <?php echo $this->formFile($form->get('htmlFile')); ?>
     </div>
-    <?php if ($form->get('htmlFileURL')->getValue()) : ?>
-        <iframe src="<?php echo $form->get('htmlFileURL')->getValue(); ?>">
 
-        </iframe>
-    <?php endif; ?>
+    <div id="preview">
+        <?php echo $this->preview; ?>
+    </div>
 
     <?php echo $this->formButton($form->get('submit')); ?>
 <?php echo $this->form()->closeTag() ?>

@@ -92,7 +92,7 @@ class ListController extends AbstractActionController
                 foreach ($form->getMessages() as $field => $errMsg) {
                     $this->flashMessenger()->addMessage($field . ' - ' . current($errMsg));
                 }
-                return $this->redirect()->toRoute('admin/email-campaign/lists/add');
+                return $this->redirect()->toRoute('admin/email-campaign/lists/edit', array('listId' => $mailingList->getId()));
             }
         }
 
