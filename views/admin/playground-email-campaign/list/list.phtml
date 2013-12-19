@@ -20,9 +20,11 @@
                 <td><?php echo $list->getDescription(); ?></td>
                 <td><?php echo count($list->getSubscriptions()); ?></td>
                 <td></td>
+                <?php $viewLink = $this->url('admin/email-campaign/lists/view', array('listId' => $list->getId()));?>
                 <?php $editLink = $this->url('admin/email-campaign/lists/edit', array('listId' => $list->getId()));?>
                 <?php $deleteLink = $this->url('admin/email-campaign/lists/remove', array('listId' => $list->getId()));?>
                 <td>
+                    <a href='<?php echo $viewLink ?>'><?php echo $this->translate('View'); ?></a>
                     <a href='<?php echo $editLink ?>'><?php echo $this->translate('Edit'); ?></a>
                     <a href='<?php echo $deleteLink ?>'><?php echo $this->translate('Remove'); ?></a>
                 </td>

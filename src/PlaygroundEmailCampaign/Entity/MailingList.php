@@ -150,12 +150,12 @@ class MailingList implements InputFilterAwareInterface
         return $this->subscriptions;
     }
 
-    public function getDistantID() {
-        return $this->distantID;
+    public function getDistantId() {
+        return $this->distantId;
     }
 
-    public function setDistantID($distantID) {
-        $this->distantID = $distantID;
+    public function setDistantId($distantId) {
+        $this->distantId = $distantId;
         return $this;
     }
 }

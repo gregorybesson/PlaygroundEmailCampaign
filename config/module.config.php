@@ -167,6 +167,47 @@ return array(
                                             ),
                                         ),
                                     ),
+                                    'view' => array(
+                                        'type' => 'Segment',
+                                        'options' => array(
+                                            'route' => '/view[/:listId]',
+                                            'constraints' => array(
+                                                ':listId' => '[0-9]+',
+                                            ),
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_list',
+                                                'action' => 'view',
+                                            ),
+                                        ),
+                                    ),
+                                    'subscribe' => array(
+                                        'type' => 'Segment',
+                                        'options' => array(
+                                            'route' => '/subscribe/:list/:contactId',
+                                            'constraints' => array (
+                                                ':listId' => '[0-9]+',
+                                                ':contactId' => '[0-9]+',
+                                            ),
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_campaign',
+                                                'action' => 'subscribe',
+                                            ),
+                                        ),
+                                    ),
+                                    'unsubscribe' => array(
+                                        'type' => 'Segment',
+                                        'options' => array(
+                                            'route' => '/unsubscribe/:list/:contactId',
+                                            'constraints' => array (
+                                                ':listId' => '[0-9]+',
+                                                ':contactId' => '[0-9]+',
+                                            ),
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_campaign',
+                                                'action' => 'unsubscribe',
+                                            ),
+                                        ),
+                                    ),
                                 ),
                             ),
 

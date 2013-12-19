@@ -5,6 +5,7 @@ namespace PlaygroundEmailCampaign\Service;
 use ZfcBase\EventManager\EventProvider;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\Stdlib\ErrorHandler;
 
 use PlaygroundEmailCampaign\Options\ModuleOptions;
 
@@ -25,20 +26,106 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
 
     protected $webMailService;
 
-    /**
-     *
-     * @var TemplateService
-     */
-    protected $templateService;
-
-    public function getQueryURL()
-    {
-        return $this->getWebMailService()->getQueryURL();
-    }
+    /**** GENERAL ****/
 
     public function init()
     {
         // stuffs
+    }
+
+    /**
+     * @return boolean weither we can connect or not to the web mail service
+     */
+    public function checkConnection()
+    {
+        return $this->getWebMailService()->ping();
+    }
+
+    /**** TEMPLATES ****/
+
+    /**
+     *
+     * @param Template $template
+     * @return  integer template_id if it worked
+     *          boolean false if it failed
+     */
+    public function addTemplate($template)
+    {
+        return $this->getWebMailService()->addTemplate($template);
+    }
+
+    /**
+     *
+     * @param Template $template
+     * @return boolean weither or not the update worked
+     */
+    public function updateTemplate($template)
+    {
+        return $this->getWebMailService()->updateTemplate($template);
+    }
+
+    public function previewTemplate($template)
+    {
+        $result = $this->getWebMailService()->getPreviewTemplate($template);
+    }
+
+    /**
+     *
+     * @param Template $template
+     * @return boolean weither or not the template was deleted
+     */
+    public function deleteTemplate($template)
+    {
+        return $this->getWebMailService()->deleteTemplate($template);
+    }
+
+    /**
+     *
+     * @return array of arrays
+     */
+    public function listDefaultTemplates()
+    {
+        return $this->getWebMailService()->listDefaultTemplates();
+    }
+
+    /**
+     *
+     * @return array of arrays
+     */
+    public function listCustomTemplates()
+    {
+        return $this->getWebMailService()->listCustomTemplates();
+    }
+
+    /**** LISTS ****/
+
+    /**
+     *
+     * @param MailingList $list
+     * @return integer list_id if it worked
+     *          boolean false if it failed
+     */
+    public function addList($list)
+    {
+
+    }
+
+    public function subscribeList($list, $contacts)
+    {
+
+    }
+
+    public function unsubscribeList($list, $contact)
+    {
+    }
+
+    public function deleteList($list)
+    {
+    }
+
+    public function listLists()
+    {
+        return $this->getWebMailService()->listLists();
     }
 
     //setUp si en local / changement de service
@@ -52,19 +139,30 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
 
     // createContact(pgUser)
 
+    /**** OTHER ****/
+    public function import($fileData) {
+        if (!empty($fileData['tmp_name'])) {
+            $path = $this->getOptions()->getMediaPath() . DIRECTORY_SEPARATOR;
+            $real_media_path = realpath($path) . DIRECTORY_SEPARATOR;
 
-    public function getTemplateService()
-    {
-        if ($this->templateService === null) {
-            $this->templateService = $this->getServiceLocator()->get('playgroundemailcampaign_template_service');
+            // use the xml data as object
+            ErrorHandler::start();
+            move_uploaded_file($fileData['tmp_name'], $path . $fileData['name']);
+            ErrorHandler::stop(true);
+
+            if (!file_exists($real_media_path.$fileData['name'])) {
+                return false;
+            }
+
+            $content = file_get_contents($real_media_path.$fileData['name']);
+
+            if ($content) {
+                // remove the file from folder
+                unlink($real_media_path.$fileData['name']);
+                return $content;
+            }
         }
-        return $this->templateService;
-    }
-
-    public function setTemplateService($templateService)
-    {
-        $this->templateService = $templateService;
-        return $this;
+        return false;
     }
 
     public function getServiceManager()

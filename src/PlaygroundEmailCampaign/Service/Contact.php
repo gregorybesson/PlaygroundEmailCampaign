@@ -8,11 +8,11 @@ use Zend\ServiceManager\ServiceManagerAwareInterface;
 
 use PlaygroundEmailCampaign\Entity\Contact as ContactEntity;
 use PlaygroundEmailCampaign\Mapper\Contact as ContactMapper;
+use PlaygroundUser\Service\User as UserService;
 use PlaygroundEmailCampaign\Mapper\Subscription as SubscriptionMapper;
 use PlaygroundEmailCampaign\Entity\Subscription as SubscriptionEntity;
-use Application\Form\Contact;
 
-class Contact extends EventProvider implements ServiceManagerAwareInterface
+class Contact extends UserService implements ServiceManagerAwareInterface
 {
     /**
      * @var ContactMapper
@@ -29,19 +29,32 @@ class Contact extends EventProvider implements ServiceManagerAwareInterface
      */
     protected $serviceManager;
 
+    public function __construct()
+    {
+    }
+
+    public function initContactBook()
+    {
+        $users = $this->getUserMapper()->findAll();
+        foreach ($users as $user) {
+            $this->createContact($user);
+        }
+    }
+
     /**
      *
      * @param \PlaygroundUser\Entity\User $user
      * @return \PlaygroundEmailCampaign\Entity\Contact
      */
-    public function create($user)
+    public function createContact($user)
     {
-        $contact = new ContactEntity();
-        $contact->setUser($user);
-        $contact->setOptin($user->getOptin());
+        $contact = $this->getContactMapper()->isRegistered($user);
+        if (!$contact) {
+            $contact = new ContactEntity();
+            $contact->setUser($user);
+            $contact->setOptin($user->getOptin());
+        }
         $contact = $this->getContactMapper()->insert($contact);
-
-        //create on distant
 
         return $contact;
     }
@@ -51,11 +64,9 @@ class Contact extends EventProvider implements ServiceManagerAwareInterface
      * @param \PlaygroundEmailCampaign\Entity\Contact $contact
      * @return \PlaygroundEmailCampaign\Entity\Contact
      */
-    public function edit($contact)
+    public function editContact($contact)
     {
         $contact = $this->getContactMapper()->update($contact);
-
-        //edit on distant
 
         return $contact;
     }
@@ -74,61 +85,6 @@ class Contact extends EventProvider implements ServiceManagerAwareInterface
         }
     }
 
-    /**
-     *
-     * @param \PlaygroundEmailCampaign\Entity\Contact $contact
-     * @param \PlaygroundEmailCampaign\Entity\MailingList $list
-     * @return \PlaygroundEmailCampaign\Entity\Contact
-     */
-    public function createSubscription($contact, $list)
-    {
-        $subscription = new SubscriptionEntity();
-        $subscription->setContact($contact);
-        $subscription->setMailingList($mailingList);
-        $subscription->setStatus(SubscriptionEntity::STATUS_PENDING);
-        $subscription = $this->getSubscriptionMapper()->insert($subscription);
-
-        return $subscription;
-    }
-
-    /**
-     *
-     * @param \PlaygroundEmailCampaign\Entity\Subscription $subscription
-     * @return \PlaygroundEmailCampaign\Entity\Subscription
-     */
-    public function activateSubscription($subscription)
-    {
-        $subscription->setStatus(SubscriptionEntity::STATUS_SUBSCRIBED);
-        $subscription = $this->getSubscriptionMapper()->update($subscription);
-
-        return $subscription;
-    }
-
-    /**
-     *
-     * @param \PlaygroundEmailCampaign\Entity\Subscription $subscription
-     * @return \PlaygroundEmailCampaign\Entity\Subscription
-     */
-    public function deactivateSubscription($subscription)
-    {
-        $subscription->setStatus(SubscriptionEntity::STATUS_UNSUBSCRIBED);
-        $subscription = $this->getSubscriptionMapper()->update($subscription);
-
-        return $subscription;
-    }
-
-    /**
-     *
-     * @param \PlaygroundEmailCampaign\Entity\Subscription $subscription
-     * @return \PlaygroundEmailCampaign\Entity\Subscription
-     */
-    public function clearSubscription($subscription)
-    {
-        $subscription->setStatus(SubscriptionEntity::STATUS_CLEARED);
-        $subscription = $this->getSubscriptionMapper()->update($subscription);
-
-        return $subscription;
-    }
 
     public function getServiceManager()
     {
@@ -152,6 +108,17 @@ class Contact extends EventProvider implements ServiceManagerAwareInterface
     public function setContactMapper($contactMapper)
     {
         $this->contactMapper = $contactMapper;
+        return $this;
+    }
+
+    public function getUserService()
+    {
+        return $this->userService;
+    }
+
+    public function setUserService($userService)
+    {
+        $this->userService = $userService;
         return $this;
     }
 

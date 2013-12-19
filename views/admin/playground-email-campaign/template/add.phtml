@@ -26,6 +26,8 @@
     <?php echo $this->formButton($form->get('submit')); ?>
 <?php echo $this->form()->closeTag() ?>
 
-<div <?php echo $this->preview_attributes; ?> id="preview">
-    <?php echo $this->preview_content; ?>
-</div>
+<?php if ($this->preview) :?>
+    <div id="preview">
+        <img src="<?php echo $this->preview; ?>" alt="<?php echo get('title') ?> preview"/>
+    </div>
+<?php endif; ?>

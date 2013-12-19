@@ -43,12 +43,12 @@ class Contact implements InputFilterAwareInterface
     protected $optin;
 
     /**
-     * @ORM\Column(name="optin_datetime", type="datetime")
+     * @ORM\Column(name="optin_datetime", type="datetime", nullable=true)
      */
     protected $optinDatetime;
 
     /**
-     * @ORM\Column(name="optout_datetime", type="datetime")
+     * @ORM\Column(name="optout_datetime", type="datetime", nullable=true)
      */
     protected $optoutDatetime;
 
@@ -59,13 +59,13 @@ class Contact implements InputFilterAwareInterface
     protected $unsubscribedCampaign;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $client;
 
     // only TEXT or HTML
     /**
-     * @ORM\Column(name="email_type", type="string")
+     * @ORM\Column(name="email_type", type="string", nullable=true)
      */
     protected $emailType;
 

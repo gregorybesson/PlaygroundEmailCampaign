@@ -15,7 +15,13 @@ class ListController extends AbstractActionController
 
     public function optinAction()
     {
-        var_dump($this->getFacadeService()->getQueryURL());
+        $sm = $this->getServiceLocator();
+        $contactService = $sm->get('playgroundemailcampaign_contact_service');
+        $contactService->initContactBook();
+        $listService = $sm->get('playgroundemailcampaign_mailinglist_service');
+        $lists = $listService->getListMapper()->findAll();
+        $subscription = $listService->createSubscription(current($contact), current($lists));
+        var_dump($subscription);
         return new ViewModel(array());
     }
 

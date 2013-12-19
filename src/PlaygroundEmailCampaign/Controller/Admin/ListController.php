@@ -28,6 +28,10 @@ class ListController extends AbstractActionController
 
     public function addAction()
     {
+        if (!$this->getMailingListService()->getFacadeService()->checkConnection() ) {
+            $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
+            return $this->redirect()->toRoute('admin/email-campaign/lists');
+        }
         $form = $this->getServiceLocator()->get('playgroundemailcampaign_mailinglist_form');
         $form->get('submit')->setLabel('Enregistrer');
         $form->setAttribute('action', '');
@@ -63,6 +67,10 @@ class ListController extends AbstractActionController
 
     public function editAction()
     {
+        if (!$this->getMailingListService()->getFacadeService()->checkConnection() ) {
+            $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
+            return $this->redirect()->toRoute('admin/email-campaign/lists');
+        }
         $listId = $this->getEvent()->getRouteMatch()->getParam('listId');
         if (!$listId) {
             return $this->redirect()->toRoute('admin/email-campaign/lists');
@@ -110,6 +118,10 @@ class ListController extends AbstractActionController
 
     public function removeAction()
     {
+        if (!$this->getMailingListService()->getFacadeService()->checkConnection() ) {
+            $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
+            return $this->redirect()->toRoute('admin/email-campaign/lists');
+        }
         $listId = $this->getEvent()->getRouteMatch()->getParam('listId');
         if (!$listId) {
             return $this->redirect()->toRoute('admin/email-campaign/lists');
@@ -125,14 +137,15 @@ class ListController extends AbstractActionController
 
     public function viewAction()
     {
-        $list = $this->getEvent()->getRouteMatch()->getParam('listId');
-        if (!$list) {
+        $listId = $this->getEvent()->getRouteMatch()->getParam('listId');
+        if (!$listId) {
             return $this->redirect()->toRoute('admin/email-campaign/lists');
         }
-        $subscriptions = $this->getMailingListService()->getSubscriptionMapper()->findBy(array('mailingList' => $list,));
+        $list = $this->getMailingListService()->getMailingListMapper()->findById($listId);
+
         $adapter = new DoctrineAdapter(
             new LargeTablePaginator(
-                $this->getMailingListService()->getMailingListMapper()->queryAll(array('name' => 'ASC'))
+                $this->getMailingListService()->getSubscriptionMapper()->queryByList($list)
             )
         );
         $paginator = new Paginator($adapter);
@@ -141,13 +154,46 @@ class ListController extends AbstractActionController
         $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('p'));
 
         return new ViewModel(array(
-            'lists' => $paginator,
+            'subscription' => $paginator,
             'flashMessages' => $this->flashMessenger()->getMessages(),
         ));
     }
 
+    public function subscribeAction()
+    {
+        $listId = $this->getEvent()->getRouteMatch()->getParam('listId');
+        $contactId = $this->getEvent()->getRouteMatch()->getParam('contactId');
+        if (!$this->getMailingListService()->getFacadeService()->checkConnection() ) {
+            $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
+            return $this->redirect()->toRoute('admin/email-campaign/lists/view', array('listId' => $listId));
+        }
+        $list = $this->getMailingListService()->getMailingListMapper()->findById($listId);
+        $contact = $this->getContactService()->getContactMapper()->findById($contactId);
+        $subscription = $this->getMailingListService()->createSubscription($contact, $list);
+        if (!$subscription) {
+            $this->flashMessenger()->addMessage('An error occurred during the subscription creation');
+        }
+        $this->flashMessenger()->addMessage('The subscription was created');
+        $this->redirect()->toRoute('admin/email-campaign/lists/view', array('listId' => $listId));
+    }
+
+    public function unsubscribeAction()
+    {
+        $listId = $this->getEvent()->getRouteMatch()->getParam('listId');
+        $contactId = $this->getEvent()->getRouteMatch()->getParam('contactId');
+        if (!$this->getMailingListService()->getFacadeService()->checkConnection() ) {
+            $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
+            return $this->redirect()->toRoute('admin/email-campaign/lists/view', array('listId' => $listId));
+        }
+        $list = $this->getMailingListService()->getMailingListMapper()->findById($listId);
+        $contact = $this->getContactService()->getContactMapper()->findById($contactId);
+
+        $this->getMailingListService()->createSubscription($contact, $list);
+    }
+
     public function listAction()
     {
+        $this->getMailingListService()->getFacadeService()->listLists();
         $adapter = new DoctrineAdapter(
             new LargeTablePaginator(
                 $this->getMailingListService()->getMailingListMapper()->queryAll(array('name' => 'ASC'))

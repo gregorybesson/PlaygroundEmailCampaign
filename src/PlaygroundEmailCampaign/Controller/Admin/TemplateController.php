@@ -22,6 +22,10 @@ class TemplateController extends AbstractActionController
 
     public function addAction()
     {
+        if (!$this->getTemplateService()->getFacadeService()->checkConnection() ) {
+            $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
+            return $this->redirect()->toRoute('admin/email-campaign/templates');
+        }
         $form = $this->getServiceLocator()->get('playgroundemailcampaign_template_form');
         $form->get('submit')->setLabel('Ajouter');
 
@@ -51,36 +55,43 @@ class TemplateController extends AbstractActionController
 
     public function editAction()
     {
+        if (!$this->getTemplateService()->getFacadeService()->checkConnection() ) {
+            $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
+            return $this->redirect()->toRoute('admin/email-campaign/templates');
+        }
+
         $templateId = $this->getEvent()->getRouteMatch()->getParam('templateId');
         if (!$templateId) {
             return $this->redirect()->toRoute('admin/email-campaign/templates');
         }
         $template = $this->getTemplateService()->getTemplateMapper()->findById($templateId);
+
         $form = $this->getServiceLocator()->get('playgroundemailcampaign_template_form');
         $form->get('submit')->setLabel("Modifier");
         $form->setAttribute('action', '');
         $form->bind($template);
 
-        $htmlContent = '';
-        $preview = '';
-        if ($template->getHtmlFileURL()) {
-            $media_url = $this->getTemplateService()->getOptions()->getMediaUrl() . DIRECTORY_SEPARATOR;
-            $path = $this->getTemplateService()->getOptions()->getMediaPath() . DIRECTORY_SEPARATOR;
-            $real_media_path = realpath($path) . DIRECTORY_SEPARATOR;
-            $doc = new \DOMDocument();
-            $doc->loadHTMLFile(str_replace($media_url, $real_media_path, $template->getHtmlFileURL()));
-            if ($doc) {
-                $preview_content = '';
-                foreach ($doc->getElementsByTagName('body')->item(0)->childNodes as $child) {
-                    $preview_content .= $child->C14N();
-                }
-                $preview_attributes = '';
-                foreach ($doc->getElementsByTagName('body')->item(0)->attributes as $attr) {
-                    $preview_attributes .= $attr->name . '="' . $attr->value . '" ';
-                }
-            }
-        }
-        $form->get('htmlContent')->setValue($doc->C14N());
+//         $htmlContent = '';
+        $preview = $template->getPreviewURL();
+
+//         if ($template->getHtmlFileURL()) {
+//             $media_url = $this->getTemplateService()->getOptions()->getMediaUrl() . DIRECTORY_SEPARATOR;
+//             $path = $this->getTemplateService()->getOptions()->getMediaPath() . DIRECTORY_SEPARATOR;
+//             $real_media_path = realpath($path) . DIRECTORY_SEPARATOR;
+//             $doc = new \DOMDocument();
+//             $doc->loadHTMLFile(str_replace($media_url, $real_media_path, $template->getHtmlFileURL()));
+//             if ($doc) {
+//                 $preview_content = '';
+//                 foreach ($doc->getElementsByTagName('body')->item(0)->childNodes as $child) {
+//                     $preview_content .= $child->C14N();
+//                 }
+//                 $preview_attributes = '';
+//                 foreach ($doc->getElementsByTagName('body')->item(0)->attributes as $attr) {
+//                     $preview_attributes .= $attr->name . '="' . $attr->value . '" ';
+//                 }
+//                 $form->get('htmlContent')->setValue(utf8_decode($doc->C14N()));
+//             }
+//         }
 
         if ($this->getRequest()->isPost()) {
             $data = array_replace_recursive(
@@ -91,7 +102,6 @@ class TemplateController extends AbstractActionController
             $form->setData($data);
             if ($form->isValid()) {
                 $data = array_replace_recursive($data, $form->getData()->getArrayCopy());
-                var_dump($data);
                 $template = $this->getTemplateService()->edit($template->getId(), $data);
                 if ($template) {
                     return $this->redirect()->toRoute('admin/email-campaign/templates');
@@ -110,8 +120,9 @@ class TemplateController extends AbstractActionController
             array(
                 'form' => $form,
                 'flashMessages' => $this->flashMessenger()->getMessages(),
-                'preview_attributes' => $preview_attributes,
-                'preview_content' => $preview_content,
+//                 'preview_attributes' => $preview_attributes,
+//                 'preview_content' => $preview_content,
+                'preview' =>$preview,
             )
         );
         return $viewModel;
@@ -119,6 +130,10 @@ class TemplateController extends AbstractActionController
 
     public function removeAction()
     {
+        if (!$this->getTemplateService()->getFacadeService()->checkConnection() ) {
+            $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
+            return $this->redirect()->toRoute('admin/email-campaign/templates');
+        }
         $templateId = $this->getEvent()->getRouteMatch()->getParam('templateId');
         if (!$templateId) {
             return $this->redirect()->toRoute('admin/email-campaign/templates');
@@ -134,6 +149,10 @@ class TemplateController extends AbstractActionController
 
     public function listAction()
     {
+        if (!$this->getTemplateService()->getFacadeService()->checkConnection() ) {
+            $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
+            return $this->redirect()->toRoute('admin/email-campaign/templates');
+        }
         $adapter = new DoctrineAdapter(
             new LargeTablePaginator(
                 $this->getTemplateService()->getTemplateMapper()->queryAll(array('title' => 'ASC'))

@@ -2,7 +2,9 @@
 
 namespace PlaygroundEmailCampaign\Mapper;
 
-class Contact
+use Doctrine\ORM\AbstractQuery as Query;
+
+class Subscription
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -22,7 +24,7 @@ class Contact
     public function getEntityRepository()
     {
         if (null === $this->er) {
-            $this->er = $this->em->getRepository('\PlaygroundEmailCampaign\Entity\Contact');
+            $this->er = $this->em->getRepository('\PlaygroundEmailCampaign\Entity\Subscription');
         }
 
         return $this->er;
@@ -36,6 +38,11 @@ class Contact
     public function findBy($array = array(), $sortArray = array())
     {
         return $this->getEntityRepository()->findBy($array, $sortArray);
+    }
+
+    public function findOneBy($array = array(), $sortArray = array())
+    {
+        return $this->getEntityRepository()->findOneBy($array, $sortArray);
     }
 
     public function insert($entity)
@@ -67,22 +74,25 @@ class Contact
         $this->em->flush();
     }
 
-    public function queryAll($sortArray = array())
+    public function queryByList($list, $sortArray = array())
     {
         $query = $this->em->createQuery(
-            'SELECT c FROM PlaygroundEmailCampaign\Entity\Contact c'
-            .( ! empty($sortArray) ? 'ORDER BY c.'.key($sortArray).' '.current($sortArray) : '' )
+            'SELECT s FROM PlaygroundEmailCampaign\Entity\Subscription s
+                WHERE s.mailingList = :list'
+            .( ! empty($sortArray) ? 'ORDER BY s.'.key($sortArray).' '.current($sortArray) : '' )
         );
+        $query->setParameter('list', $list);
         return $query;
     }
 
-    public function isRegistered($user)
+    public function queryByContact($contact, $sortArray = array())
     {
-        $results = $this->getEntityRepository()->findBy(
-            array(
-                'user' => $user,
-            ));
-        return (!empty($results)) ? current($results) : false;
+        $query = $this->em->createQuery(
+            'SELECT s FROM PlaygroundEmailCampaign\Entity\Subscription s
+                WHERE s.contact = :contact'
+            .( ! empty($sortArray) ? 'ORDER BY s.'.key($sortArray).' '.current($sortArray) : '' )
+        );
+        $query->setParameter('contact', $contact);
+        return $query->getResult(Query::HYDRATE_OBJECT);
     }
-
 }

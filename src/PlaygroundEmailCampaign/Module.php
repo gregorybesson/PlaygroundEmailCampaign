@@ -68,8 +68,6 @@ class Module
                 'playgroundemailcampaign_campaign_service' => 'PlaygroundEmailCampaign\Service\Campaign',
                 'playgroundemailcampaign_contact_service' => 'PlaygroundEmailCampaign\Service\Contact',
                 'playgroundemailcampaign_facade_service' => 'PlaygroundEmailCampaign\Service\WebMailFacade',
-
-                'playgroundemailcampaign_mailchimp_service' => 'PlaygroundEmailCampaign\Service\MailChimpService',
             ),
 
             'factories' => array(
@@ -134,6 +132,11 @@ class Module
                     $form->setInputFilter($campaign->getInputFilter());
                     return $form;
                 },
+                'playgroundemailcampaign_mailchimp_service' => function ($sm) {
+                    $key = $sm->get('playgroundemailcampaign_module_options')->getUserKey();
+                    $service = new \PlaygroundEmailCampaign\Service\MailChimpService($key);
+                    return $service;
+                }
             ),
         );
     }

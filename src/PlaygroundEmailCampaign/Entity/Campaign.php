@@ -54,7 +54,7 @@ class Campaign implements InputFilterAwareInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="Template", inversedBy="campaigns", cascade={"persist"})
-     * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="template_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $template;
 
@@ -365,14 +365,14 @@ class Campaign implements InputFilterAwareInterface
         return $this;
     }
 
-    public function getDistantID()
+    public function getDistantId()
     {
-        return $this->distantID;
+        return $this->distantId;
     }
 
-    public function setDistantID($distantID)
+    public function setDistantId($distantId)
     {
-        $this->distantID = $distantID;
+        $this->distantId = $distantId;
         return $this;
     }
 

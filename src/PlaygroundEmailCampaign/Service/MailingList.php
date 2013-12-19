@@ -5,6 +5,7 @@ namespace PlaygroundEmailCampaign\Service;
 use ZfcBase\EventManager\EventProvider;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
+use PlaygroundEmailCampaign\Service\WebMailFacade;
 
 use PlaygroundEmailCampaign\Entity\MailingList as MailingListEntity;
 use PlaygroundEmailCampaign\Mapper\MailingList as MailingListMapper;
@@ -26,6 +27,13 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
      * @var ServiceManager
      */
     protected $serviceManager;
+
+    /**
+     * @var WebMailFacade
+     */
+    protected $facadeService;
+
+    //import from mailchimp ->check emails to know if pg user and create contact only if it is ??
 
     public function getServiceManager()
     {
@@ -88,6 +96,75 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
     }
 
     // do not allow to create a subscription if user is in optout
+    /**
+     *
+     * @param \PlaygroundEmailCampaign\Entity\Contact $contact
+     * @param \PlaygroundEmailCampaign\Entity\MailingList $list
+     * @return \PlaygroundEmailCampaign\Entity\Contact
+     */
+    public function createSubscription($contact, $list)
+    {
+        if ($contact->getOptin()) {
+            $subscription = new SubscriptionEntity();
+            $subscription->setContact($contact);
+            $subscription->setMailingList($mailingList);
+            $subscription->setStatus(SubscriptionEntity::STATUS_PENDING);
+
+            //subscribe on distant service
+
+
+            $subscription = $this->getSubscriptionMapper()->insert($subscription);
+
+            return $subscription;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param \PlaygroundEmailCampaign\Entity\Subscription $subscription
+     * @return \PlaygroundEmailCampaign\Entity\Subscription
+     */
+    public function activateSubscription($subscription)
+    {
+        $subscription->setStatus(SubscriptionEntity::STATUS_SUBSCRIBED);
+        $subscription = $this->getSubscriptionMapper()->update($subscription);
+
+        return $subscription;
+    }
+
+    /**
+     *
+     * @param \PlaygroundEmailCampaign\Entity\Subscription $subscription
+     * @return \PlaygroundEmailCampaign\Entity\Subscription
+     */
+    public function deactivateSubscription($subscription)
+    {
+        $subscription->setStatus(SubscriptionEntity::STATUS_UNSUBSCRIBED);
+        $subscription = $this->getSubscriptionMapper()->update($subscription);
+
+        return $subscription;
+    }
+
+    /**
+     *
+     * @param \PlaygroundEmailCampaign\Entity\Subscription $subscription
+     * @return \PlaygroundEmailCampaign\Entity\Subscription
+     */
+    public function clearSubscription($list, $contact)
+    {
+        $subscription = $this->getSubscriptionMapper()->findOneBy(array(
+            'mailingList' => $list,
+            'contact' => $contact,
+        ));
+        // CLEAR FOR DISTANT
+
+        if ($subscription) {
+            $subscription->setStatus(SubscriptionEntity::STATUS_CLEARED);
+            $subscription = $this->getSubscriptionMapper()->update($subscription);
+        }
+        return $subscription;
+    }
 
     public function getMailingListMapper()
     {
@@ -114,6 +191,20 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
     public function setSubscriptionMapper($subscriptionMapper)
     {
         $this->subscriptionMapper = $subscriptionMapper;
+        return $this;
+    }
+
+    public function getFacadeService()
+    {
+        if (null === $this->facadeService) {
+            $this->facadeService = $this->getServiceManager()->get('playgroundemailcampaign_facade_service');
+        }
+        return $this->facadeService;
+    }
+
+    public function setFacadeService($facadeService)
+    {
+        $this->facadeService = $facadeService;
         return $this;
     }
 }

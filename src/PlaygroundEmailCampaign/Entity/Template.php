@@ -34,15 +34,20 @@ class Template implements InputFilterAwareInterface
     protected $title;
 
     /**
-     * @ORM\Column(name="html_file_url", type="string", nullable=true)
+     * @ORM\Column(name="preview_url", type="string", nullable=true)
      */
-    protected $htmlFileURL;
+    protected $previewURL;
+
+    /**
+     * @ORM\Column(name="html_content", type="text")
+     */
+    protected $htmlContent = '';
 
     // Id dans la base du web mail
     /**
      * @ORM\Column(name="distant_id", type="integer", nullable=true)
      */
-    protected $distantID;
+    protected $distantId;
 
     public function getId()
     {
@@ -66,23 +71,36 @@ class Template implements InputFilterAwareInterface
         return $this;
     }
 
-    public function getHtmlFileURL()
+    public function getPreviewURL()
     {
-        return $this->htmlFileURL;
+        return $this->previewURL;
     }
 
-    public function setHtmlFileURL($htmlFileURL)
+    public function setPreviewURL($previewURL)
     {
-        $this->htmlFileURL = $htmlFileURL;
+        $this->previewURL = $previewURL;
         return $this;
     }
 
-    public function getDistantID() {
-        return $this->distantID;
+    public function getDistantId()
+    {
+        return $this->distantId;
     }
 
-    public function setDistantID($distantID) {
-        $this->distantID = $distantID;
+    public function setDistantID($distantId)
+    {
+        $this->distantId = $distantId;
+        return $this;
+    }
+
+    public function getHtmlContent()
+    {
+        return $this->htmlContent;
+    }
+
+    public function setHtmlContent($htmlContent)
+    {
+        $this->htmlContent = $htmlContent;
         return $this;
     }
 
@@ -96,8 +114,11 @@ class Template implements InputFilterAwareInterface
         if (isset($data['title']) && $data['title'] != null) {
             $this->title = $data['title'];
         }
-        if (isset($data['htmlFileURL']) && $data['htmlFileURL'] != null) {
-            $this->htmlFileURL = $data['htmlFileURL'];
+        if (isset($data['previewURL']) && $data['previewURL'] != null) {
+            $this->previewURL = $data['previewURL'];
+        }
+        if (isset($data['htmlContent']) && $data['htmlContent'] != null) {
+            $this->htmlContent = $data['htmlContent'];
         }
         if (isset($data['distantId']) && $data['distantId'] != null) {
             $this->distantId = $data['distantId'];
@@ -122,7 +143,13 @@ class Template implements InputFilterAwareInterface
             )));
 
             $inputFilter->add($factory->createInput(array(
-                'name' => 'htmlFileURL',
+                'name' => 'previewURL',
+                'required' => false,
+                'allowEmpty' => true,
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'htmlContent',
                 'required' => false,
                 'allowEmpty' => true,
             )));
