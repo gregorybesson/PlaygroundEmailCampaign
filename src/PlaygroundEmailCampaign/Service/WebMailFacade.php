@@ -69,6 +69,11 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
         $result = $this->getWebMailService()->getPreviewTemplate($template);
     }
 
+    public function getStructTemplate($template)
+    {
+        return $this->getWebMailService()->getSectionsTemplate($template);
+    }
+
     /**
      *
      * @param Template $template
@@ -151,6 +156,23 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
     public function listLists()
     {
         return $this->getWebMailService()->listLists();
+    }
+
+    /**** CAMPAIGNS ****/
+
+    public function addCampaign($campaign)
+    {
+        return $this->getWebMailService()->addCampaign($campaign);
+    }
+
+    public function updateCampaign($campaign)
+    {
+        return $this->getWebMailService()->updateCampaign($campaign);
+    }
+
+    public function deleteCampaign($campaign)
+    {
+        return $this->getWebMailService()->deleteCampaign($campaign);
     }
 
     //setUp si en local / changement de service

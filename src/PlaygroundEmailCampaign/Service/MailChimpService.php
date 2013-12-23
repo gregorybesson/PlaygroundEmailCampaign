@@ -104,6 +104,12 @@ class MailChimpService extends EventProvider implements ServiceManagerAwareInter
         return ($result) ? $result['source'] : null;
     }
 
+    public function getSectionsTemplate($template)
+    {
+        $result = $this->getTemplateDataFromId($template->getDistantId());
+        return ($result) ? $result['sections'] : null;
+    }
+
     public function getPreviewTemplate($template)
     {
         $result = $this->getTemplateDataFromId($template->getDistantId());
@@ -219,6 +225,74 @@ class MailChimpService extends EventProvider implements ServiceManagerAwareInter
     {
         try {
             return $this->mc->lists->staticSegmentDel($this->getMainListId(), $segment->getDistantId());
+        } catch (\Mailchimp_Error $e) {
+            return false;
+        }
+    }
+
+    /**** CAMPAIGNS ****/
+
+    public function addCampaign($campaign)
+    {
+        try {
+            $campaignData = $this->mc->campaigns->create("regular",
+                array(
+                    'list_id' => $this->mainListId,
+                    'subject' => $campaign->getSubject(),
+                    'from_email' => $campaign->getFromEmail(),
+                    'from_name' => $campaign->getFromName(),
+                    'template_id' => $campaign->getTemplate()->getDistantId(),
+                    'tracking' => ($campaign->getIsTracked()) ?
+                                    array('opens'=>true, 'html_clicks'=>true, 'text_clicks'=>true)
+                                    : array('opens'=>false, 'html_clicks'=>false, 'text_clicks'=>false),
+                    'title' => $campaign->getName(),
+                ), array(
+                    'html' => '',
+                ), array(
+                    'saved_segment_id' => $campaign->getMailingList()->getDistantId(),
+                ));
+            return ($campaignData) ? $campaignData['id'] : false;
+        } catch (\Mailchimp_Error $e) {
+            return false;
+        }
+    }
+
+    public function updateCampaign($campaign)
+    {
+        try {
+            $campaignData = $this->mc->campaigns->update(
+                $campaign->getDistantId(),
+                "options",
+                array(
+                    'list_id' => $this->mainListId,
+                    'subject' => $campaign->getSubject(),
+                    'from_email' => $campaign->getFromEmail(),
+                    'from_name' => $campaign->getFromName(),
+                    'template_id' => $campaign->getTemplate()->getDistantId(),
+                    'tracking' => ($campaign->getIsTracked()) ?
+                                    array('opens'=>true, 'html_clicks'=>true, 'text_clicks'=>true)
+                                    : array('opens'=>false, 'html_clicks'=>false, 'text_clicks'=>false),
+                    'title' => $campaign->getName(),
+                )
+            );
+            $campaignData = $this->mc->campaigns->update(
+                $campaign->getDistantId(),
+                "segment_opts",
+                array(
+                    'saved_segment_id' => $campaign->getMailingList()->getDistantId(),
+                )
+            );
+            return ($campaignData) ? $campaignData['id'] : false;
+        } catch (\Mailchimp_Error $e) {
+            return false;
+        }
+    }
+
+    public function deleteCampaign($campaign)
+    {
+        try {
+            $this->mc->campaigns->delete($campaign->getDistantId());
+            return true;
         } catch (\Mailchimp_Error $e) {
             return false;
         }
