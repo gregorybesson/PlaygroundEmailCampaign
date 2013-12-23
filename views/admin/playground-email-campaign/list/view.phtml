@@ -1,0 +1,61 @@
+<?php $this->plugin('translate')->setTranslatorTextDomain('playgroundemailcampaign');// Pour le texte ?>
+<?php $locale= $this->plugin('translate')->getTranslator()->getLocale(); ?>
+
+<h2><?php echo $this->translate('Subscriptions') ?></h2>
+
+<?php  if($this->subscriptions) :?>
+    <table id="mailing_list">
+        <thead>
+            <tr>
+                <th><?php echo $this->translate('Email') ?></th>
+                <th><?php echo $this->translate('Lastname') ?></th>
+                <th><?php echo $this->translate('Firstname') ?></th>
+                <th><?php echo $this->translate('State') ?></th>
+                <th><?php echo $this->translate('Created at') ?></th>
+                <th><?php echo $this->translate('Updated at') ?></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach($this->subscriptions as $subscription):?>
+            <tr>
+                <td><?php echo $subscription->getContact()->getUser()->getEmail(); ?></td>
+                <td><?php echo $subscription->getContact()->getUser()->getLastname(); ?></td>
+                <td><?php echo $subscription->getContact()->getUser()->getFirstname(); ?></td>
+                <td><?php echo $subscription->getStatus(); ?></td>
+                <td><?php echo $this->dateFormat($subscription->getCreatedAt(), IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE, $locale); ?></td>
+                <td><?php echo $this->dateFormat($subscription->getUpdatedAt(), IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE, $locale); ?></td>
+
+                <?php if($subscription->getStatus() == 'pending' || $subscription->getStatus() == 'subscribed') : ?>
+                    <?php
+                        $unsubscribeLink = $this->url('admin/email-campaign/lists/unsubscribe', array(
+                            'listId' => $subscription->getMailingList()->getId(),
+                            'contactId' => $subscription->getContact()->getId())
+                        );
+                        $deleteLink = $this->url('admin/email-campaign/lists/unsubscribe', array(
+                            'listId' => $subscription->getMailingList()->getId(),
+                            'contactId' => $subscription->getContact()->getId(),
+                            'remove' => 1,)
+                        );
+                    ?>
+
+                    <td>
+                        <a href='<?php echo $unsubscribeLink ?>'><?php echo $this->translate('Unsubscribe'); ?></a>
+                        <a href='<?php echo $deleteLink ?>'><?php echo $this->translate('Delete'); ?></a>
+                    </td>
+                <?php elseif($subscription->getContact()->getOptin()) : ?>
+                    <?php $subscribelink = $this->url('admin/email-campaign/lists/subscribe', array(
+                        'listId' => $subscription->getMailingList()->getId(),
+                        'contactId' => $subscription->getContact()->getId())
+                    );
+                    ?>
+                    <td>
+                        <a href='<?php echo $subscribelink ?>'><?php echo $this->translate('Subscribe'); ?></a>
+                    </td>
+                <?php endif; ?>
+            </tr>
+        <?php endforeach;?>
+        </tbody>
+    </table>
+<?php endif; ?>

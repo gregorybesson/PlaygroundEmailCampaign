@@ -1,0 +1,53 @@
+<?php $this->plugin('translate')->setTranslatorTextDomain('playgroundemailcampaign');// Pour le texte ?>
+<?php $locale= $this->plugin('translate')->getTranslator()->getLocale(); ?>
+<ul class="liste-buttons">
+    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/campaigns/add'); ?>"><?php echo $this->translate('Create a campaign'); ?></a></li>
+</ul>
+<h2><?php echo $this->translate('Campaigns') ?></h2>
+    <table id="campaigns">
+        <thead>
+            <tr>
+                <th><?php echo $this->translate('Name') ?></th>
+                <th><?php echo $this->translate('Description') ?></th>
+                <th><?php echo $this->translate('From') ?></th>
+                <th><?php echo $this->translate('Subject') ?></th>
+                <th><?php echo $this->translate('Tracked') ?></th>
+                <th><?php echo $this->translate('Sent') ?></th>
+                <th><?php echo $this->translate('Sending Time ') ?></th>
+                <th><?php echo $this->translate('Created') ?></th>
+                <th><?php echo $this->translate('Last Update') ?></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach($this->campaigns as $campaign):?>
+            <tr>
+                <td><?php echo $campaign->getName(); ?></td>
+                <td><?php echo $campaign->getDescription(); ?></td>
+                <td><?php echo $campaign->getFromName().' - '.$campaign->getFromEmail(); ?></td>
+                <td><?php echo $campaign->getSubject(); ?></td>
+                <td><?php echo $campaign->getIsTracked(); ?></td>
+                <td><?php echo $campaign->getIsSent();?></td>
+                <td><?php echo $this->dateFormat($campaign->getSendingTime(), IntlDateFormatter::LONG, IntlDateFormatter::MEDIUM, $locale);?></td>
+                <td><?php echo $this->dateFormat($campaign->getCreatedAt(), IntlDateFormatter::LONG, IntlDateFormatter::MEDIUM, $locale); ?></td>
+                <td><?php echo $this->dateFormat($campaign->getUpdatedAt(), IntlDateFormatter::LONG, IntlDateFormatter::MEDIUM, $locale); ?></td>
+                <td>
+                    <?php if ($campaign->getIsTracked()) :?>
+                        <a href=''><?php echo $this->translate('Tracking data'); ?></a>
+                    <?php endif; ?>
+                </td>
+                <?php $editLink = $this->url('admin/email-campaign/campaigns/edit', array('campaignId' => $campaign->getId()));?>
+                <?php $deleteLink = $this->url('admin/email-campaign/campaigns/remove', array('campaignId' => $campaign->getId()));?>
+                <td>
+                    <a href='<?php echo $editLink ?>'><?php echo $this->translate('Edit'); ?></a>
+                    <a href='<?php echo $deleteLink ?>'><?php echo $this->translate('Remove'); ?></a>
+                </td>
+            </tr>
+        <?php endforeach;?>
+        </tbody>
+    </table>
+<ul class="liste-buttons">
+    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/campaigns/add'); ?>"><?php echo $this->translate('Create a campaign'); ?></a></li>
+</ul>
+
