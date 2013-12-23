@@ -9,6 +9,8 @@ use PlaygroundEmailCampaign\Service\WebMailFacade;
 
 use PlaygroundEmailCampaign\Entity\MailingList as MailingListEntity;
 use PlaygroundEmailCampaign\Mapper\MailingList as MailingListMapper;
+use PlaygroundEmailCampaign\Mapper\Conatct as ContactMapper;
+use PlaygroundEmailCampaign\Entity\Subscription as SubscriptionEntity;
 use PlaygroundEmailCampaign\Mapper\Subscription as SubscriptionMapper;
 
 class MailingList extends EventProvider implements ServiceManagerAwareInterface
@@ -17,6 +19,11 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
      * @var MailingListMapper
      */
     protected $mailingListMapper;
+
+    /**
+     * @var ContactMapper
+     */
+    protected $contactMapper;
 
     /**
      * @var SubscriptionMapper
@@ -50,14 +57,13 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
     {
         $mailingList = new MailingListEntity();
         $mailingList->populate($data);
-        var_dump('creating');
-        $mailingList = $this->getMailingListMapper()->insert($mailingList);
-
-        var_dump($mailingList);
-        if (!$mailingList) {
+        $listId = $this->getFacadeService()->addList($mailingList);
+        if (!$listId) {
             return false;
         }
-        return $this->update($mailingList->getId(), $data);
+        $mailingList->setDistantId($listId);
+        $mailingList = $this->getMailingListMapper()->insert($mailingList);
+        return $mailingList;
     }
 
     public function edit($mailingListId, array $data)
@@ -89,10 +95,16 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
             return false;
         }
 
-        //remove from distant
+        $removed = $this->getFacadeService()->deleteList($mailingList);
+        if ($removed) {
+            $mailingListMapper->remove($mailingList);
+        }
+        return $removed;
+    }
 
-        $mailingListMapper->remove($mailingList);
-        return true;
+    public function listAll()
+    {
+        return $this->getFacadeService()->listLists();
     }
 
     // do not allow to create a subscription if user is in optout
@@ -104,20 +116,25 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
      */
     public function createSubscription($contact, $list)
     {
-        if ($contact->getOptin()) {
+        $subscription = $this->getSubscriptionMapper()->isRegistered($list, $contact);
+        if ($contact->getOptin() && !$subscription) {
             $subscription = new SubscriptionEntity();
-            $subscription->setContact($contact);
-            $subscription->setMailingList($mailingList);
-            $subscription->setStatus(SubscriptionEntity::STATUS_PENDING);
-
+            $subscription->setMailingList($list);
             //subscribe on distant service
+            $subscribe = $this->getFacadeService()->subscribeList($list, $contact);
 
-
-            $subscription = $this->getSubscriptionMapper()->insert($subscription);
-
-            return $subscription;
+            if ($subscribe) {
+                $contact->setDistantID($subscribe);
+                $contact = $this->getContactMapper()->update($contact);
+                $subscription->setContact($contact);
+                $subscription->setStatus(SubscriptionEntity::STATUS_SUBSCRIBED);
+                $subscription = $this->getSubscriptionMapper()->insert($subscription);
+                return $subscription;
+            }
+        } elseif ($contact->getOptin() && $subscription) {
+            return $this->activateSubscription($subscription);
         }
-        return false;
+        return $subscription;
     }
 
     /**
@@ -130,6 +147,9 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
         $subscription->setStatus(SubscriptionEntity::STATUS_SUBSCRIBED);
         $subscription = $this->getSubscriptionMapper()->update($subscription);
 
+        //subscribe on distant service
+        $subscribe = $this->getFacadeService()->subscribeList($subscription->getMailingList(), $subscription->getContact());
+
         return $subscription;
     }
 
@@ -138,11 +158,17 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
      * @param \PlaygroundEmailCampaign\Entity\Subscription $subscription
      * @return \PlaygroundEmailCampaign\Entity\Subscription
      */
-    public function deactivateSubscription($subscription)
+    public function deactivateSubscription($contact, $list)
     {
+        $subscription = $this->getSubscriptionMapper()->findOneBy(array(
+            'mailingList' => $list,
+            'contact' => $contact,
+        ));
+        $this->getFacadeService()->unsubscribeList($list, $contact, false);
         $subscription->setStatus(SubscriptionEntity::STATUS_UNSUBSCRIBED);
         $subscription = $this->getSubscriptionMapper()->update($subscription);
 
+
         return $subscription;
     }
 
@@ -151,19 +177,26 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
      * @param \PlaygroundEmailCampaign\Entity\Subscription $subscription
      * @return \PlaygroundEmailCampaign\Entity\Subscription
      */
-    public function clearSubscription($list, $contact)
+    public function clearSubscription($contact, $list)
     {
         $subscription = $this->getSubscriptionMapper()->findOneBy(array(
             'mailingList' => $list,
             'contact' => $contact,
         ));
         // CLEAR FOR DISTANT
-
+        $this->getFacadeService()->unsubscribeList($list, $contact, true);
         if ($subscription) {
             $subscription->setStatus(SubscriptionEntity::STATUS_CLEARED);
             $subscription = $this->getSubscriptionMapper()->update($subscription);
         }
         return $subscription;
+    }
+
+    public function removeSubscription($subscription)
+    {
+        $this->getFacadeService()->unsubscribeList($subscription->getMailingList(), $subscription->getContact(), true);
+        $this->getSubscriptionMapper()->remove($subscription);
+        return true;
     }
 
     public function getMailingListMapper()
@@ -177,6 +210,20 @@ class MailingList extends EventProvider implements ServiceManagerAwareInterface
     public function setMailingListMapper($mailingListMapper)
     {
         $this->mailingListMapper = $mailingListMapper;
+        return $this;
+    }
+
+    public function getContactMapper()
+    {
+        if (null === $this->contactMapper) {
+            $this->contactMapper = $this->getServiceManager()->get('playgroundemailcampaign_contact_mapper');
+        }
+        return $this->contactMapper;
+    }
+
+    public function setContactMapper($contactMapper)
+    {
+        $this->contactMapper = $contactMapper;
         return $this;
     }
 

@@ -3,6 +3,7 @@
 namespace PlaygroundEmailCampaign\Mapper;
 
 use Doctrine\ORM\AbstractQuery as Query;
+use PlaygroundEmailCampaign\Entity\Subscription as SubscriptionEntity;
 
 class Subscription
 {
@@ -78,10 +79,12 @@ class Subscription
     {
         $query = $this->em->createQuery(
             'SELECT s FROM PlaygroundEmailCampaign\Entity\Subscription s
-                WHERE s.mailingList = :list'
+                WHERE s.mailingList = :list
+                AND s.status != :status'
             .( ! empty($sortArray) ? 'ORDER BY s.'.key($sortArray).' '.current($sortArray) : '' )
         );
         $query->setParameter('list', $list);
+        $query->setParameter('status', SubscriptionEntity::STATUS_CLEARED);
         return $query;
     }
 
@@ -94,5 +97,15 @@ class Subscription
         );
         $query->setParameter('contact', $contact);
         return $query->getResult(Query::HYDRATE_OBJECT);
+    }
+
+    public function isRegistered($list, $contact)
+    {
+        $results = $this->getEntityRepository()->findBy(
+            array(
+                'mailingList' => $list,
+                'contact' => $contact,
+            ));
+        return (!empty($results)) ? current($results) : false;
     }
 }

@@ -27,12 +27,24 @@ class MailChimpService extends EventProvider implements ServiceManagerAwareInter
      */
     protected $mc;
 
+    /**
+     * @var string
+     * Main Mailchimp list id used to create segments to send email campaign
+     * from playground admin
+     */
+    protected $mainListId;
+
     public function __construct($key)
     {
         try {
             $this->mc = new \Mailchimp($key);
         } catch (\Mailchimp_Error $e) {
             throw new \Exception('No API key provided');
+        }
+        $lists = $this->getLists();
+        if ($lists) {
+            $mainListData = end($lists['data']);
+            $this->setMainListId($mainListData['id']);
         }
     }
 
@@ -143,11 +155,70 @@ class MailChimpService extends EventProvider implements ServiceManagerAwareInter
     }
 
     /**** LISTS ****/
-    public function listLists()
+    public function getLists()
     {
         try{
             $lists = $this->mc->lists->getList();
-            var_dump($lists);
+            $mainListData = end($lists['data']);
+            $this->setMainListId($mainListData['id']);
+            return $lists;
+        } catch (\Mailchimp_Error $e) {
+            return false;
+        }
+    }
+
+    public function listLists()
+    {
+        try {
+            $segments = $this->mc->lists->staticSegments($this->mainListId);
+            return $segments;
+        } catch (\Mailchimp_Error $e) {
+            return false;
+        }
+    }
+
+    public function createList($list)
+    {
+        try {
+            $segment = $this->mc->lists->staticSegmentAdd($this->getMainListId(), $list->getName());
+            return ($segment) ? $segment['id'] : $segment;
+        } catch (\Mailchimp_Error $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    public function subscribeList($segment, $contact, $sendEmail)
+    {
+        try {
+            if ($contact->getDistantId()) {
+                $batch = array('euid' => $contact->getDistantid());
+            } else {
+                $batch = array('email' => $contact->getUser()->getEmail());
+            }
+            $contact = $this->mc->lists->subscribe($this->getMainListId(), $batch, array(), 'html', false, false, true, $sendEmail);
+            $this->mc->lists->staticSegmentMembersAdd($this->getMainListId(), $segment->getDistantId(), array($batch));
+            return ($contact) ? $contact['euid'] : $contact;
+        } catch (\Mailchimp_Error $e) {
+            return false;
+        }
+    }
+
+    public function unsubscribeList($segment, $contact, $clearSubscription)
+    {
+        try {
+            $batch = array('euid' => $contact->getDistantId());
+            $this->mc->lists->staticSegmentMembersDel($this->getMainListId(), $segment->getDistantId(), array($batch));
+            $this->mc->lists->unsubscribe($this->getMainListId(), $batch, $clearSubscription);
+            return true;
+        } catch (\Mailchimp_Error $e) {
+            return false;
+        }
+    }
+
+    public function deleteList($segment)
+    {
+        try {
+            return $this->mc->lists->staticSegmentDel($this->getMainListId(), $segment->getDistantId());
         } catch (\Mailchimp_Error $e) {
             return false;
         }
@@ -186,6 +257,17 @@ class MailChimpService extends EventProvider implements ServiceManagerAwareInter
     public function setMc(\Mailchimp $mc)
     {
         $this->mc = $mc;
+        return $this;
+    }
+
+    public function getMainListId()
+    {
+        return $this->mainListId;
+    }
+
+    public function setMainListId($mainListId)
+    {
+        $this->mainListId = $mainListId;
         return $this;
     }
 }

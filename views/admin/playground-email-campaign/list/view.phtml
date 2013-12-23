@@ -27,13 +27,33 @@
                 <td><?php echo $this->dateFormat($subscription->getCreatedAt(), IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE, $locale); ?></td>
                 <td><?php echo $this->dateFormat($subscription->getUpdatedAt(), IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE, $locale); ?></td>
 
-                <?php $deleteLink = $this->url('admin/email-campaign/lists/unsubscribe', array(
+                <?php if($subscription->getStatus() == 'pending' || $subscription->getStatus() == 'subscribed') : ?>
+                    <?php
+                        $unsubscribeLink = $this->url('admin/email-campaign/lists/unsubscribe', array(
+                            'listId' => $subscription->getMailingList()->getId(),
+                            'contactId' => $subscription->getContact()->getId())
+                        );
+                        $deleteLink = $this->url('admin/email-campaign/lists/unsubscribe', array(
+                            'listId' => $subscription->getMailingList()->getId(),
+                            'contactId' => $subscription->getContact()->getId(),
+                            'remove' => 1,)
+                        );
+                    ?>
+
+                    <td>
+                        <a href='<?php echo $unsubscribeLink ?>'><?php echo $this->translate('Unsubscribe'); ?></a>
+                        <a href='<?php echo $deleteLink ?>'><?php echo $this->translate('Delete'); ?></a>
+                    </td>
+                <?php elseif($subscription->getContact()->getOptin()) : ?>
+                    <?php $subscribelink = $this->url('admin/email-campaign/lists/subscribe', array(
                         'listId' => $subscription->getMailingList()->getId(),
                         'contactId' => $subscription->getContact()->getId())
-                    );?>
-                <td>
-                    <a href='<?php echo $deleteLink ?>'><?php echo $this->translate('Unsubscribe'); ?></a>
-                </td>
+                    );
+                    ?>
+                    <td>
+                        <a href='<?php echo $subscribelink ?>'><?php echo $this->translate('Subscribe'); ?></a>
+                    </td>
+                <?php endif; ?>
             </tr>
         <?php endforeach;?>
         </tbody>

@@ -107,22 +107,47 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
      */
     public function addList($list)
     {
-
+        return $this->getWebMailService()->createList($list);
     }
 
-    public function subscribeList($list, $contacts)
-    {
-
-    }
-
-    public function unsubscribeList($list, $contact)
-    {
-    }
-
+    /**
+     *
+     * @param MailingList $list
+     * @return boolean weither or not the function was called properly
+     */
     public function deleteList($list)
     {
+        return $this->getWebMailService()->deleteList($list);
     }
 
+    /**
+     *
+     * @param MailingList $list
+     * @param Contact $contact
+     * @param boolen $sendEmail weither or not we send an email to the user so he needs to confirm the subscription
+     * @return  string contact distant id if it was successful
+     *          boolean false if it was not
+     */
+    public function subscribeList($list, $contact, $sendEmail = false)
+    {
+        return $this->getWebMailService()->subscribeList($list, $contact, false);
+    }
+
+    /**
+     *
+     * @param MailingList $list
+     * @param Contact $contact
+     * @return boolean weither it worked or not
+     */
+    public function unsubscribeList($list, $contact, $clearSubscription = false)
+    {
+        return $this->getWebMailService()->unsubscribeList($list, $contact, $clearSubscription);
+    }
+
+    /**
+     *
+     * @return array of arrays
+     */
     public function listLists()
     {
         return $this->getWebMailService()->listLists();

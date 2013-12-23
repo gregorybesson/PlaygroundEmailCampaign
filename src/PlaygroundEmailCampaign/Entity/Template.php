@@ -45,7 +45,7 @@ class Template implements InputFilterAwareInterface
 
     // Id dans la base du web mail
     /**
-     * @ORM\Column(name="distant_id", type="integer", nullable=true)
+     * @ORM\Column(name="distant_id", type="string", nullable=true)
      */
     protected $distantId;
 

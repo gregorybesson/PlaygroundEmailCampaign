@@ -10,6 +10,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 use PlaygroundUser\Entity\User;
 
@@ -75,17 +76,21 @@ class Contact implements InputFilterAwareInterface
     private $subscriptions;
 
     /**
-     * @ORM\Column(name="distant_id", type="integer", nullable=true)
+     * @ORM\Column(name="distant_id", type="string", nullable=true)
      */
     protected $distantId;
 
+    /**
+     * @ORM\PreUpdate
+     * @param PreUpdateEventArgs $event
+     */
     public function preUpdate(PreUpdateEventArgs $event)
     {
         if ($event->hasChangedField('optin')) {
-            if ($optin) {
-                $optinDatetime = new \DateTime();
+            if ($this->optin) {
+                $this->optinDatetime = new \DateTime();
             } else {
-                $optoutDatetime = new \DateTime();
+                $this->optoutDatetime = new \DateTime();
             }
         }
     }
@@ -261,12 +266,12 @@ class Contact implements InputFilterAwareInterface
         return $this->subscriptions;
     }
 
-    public function getDistantID() {
-        return $this->distantID;
+    public function getDistantId() {
+        return $this->distantId;
     }
 
-    public function setDistantID($distantID) {
-        $this->distantID = $distantID;
+    public function setDistantId($distantId) {
+        $this->distantId = $distantId;
         return $this;
     }
 }

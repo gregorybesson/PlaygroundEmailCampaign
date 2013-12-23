@@ -18,10 +18,14 @@ class ListController extends AbstractActionController
         $sm = $this->getServiceLocator();
         $contactService = $sm->get('playgroundemailcampaign_contact_service');
         $contactService->initContactBook();
+        $contacts = $contactService->getContactMapper()->findAll();
         $listService = $sm->get('playgroundemailcampaign_mailinglist_service');
-        $lists = $listService->getListMapper()->findAll();
-        $subscription = $listService->createSubscription(current($contact), current($lists));
-        var_dump($subscription);
+        $lists = $listService->getMailingListMapper()->findAll();
+        foreach($contacts as $contact) {
+//             $contact->setOptin(0);
+//             $contactService->getContactMapper()->update($contact);
+            $subscription = $listService->createSubscription($contact, current($lists));
+        }
         return new ViewModel(array());
     }
 

@@ -80,7 +80,7 @@ class Campaign implements InputFilterAwareInterface
     protected $unsubscribeURL;
 
     /**
-     * @ORM\Column(name="distant_id", type="integer", nullable=true)
+     * @ORM\Column(name="distant_id", type="string", nullable=true)
      */
     protected $distantId;
 

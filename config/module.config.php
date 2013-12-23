@@ -183,13 +183,13 @@ return array(
                                     'subscribe' => array(
                                         'type' => 'Segment',
                                         'options' => array(
-                                            'route' => '/subscribe/:list/:contactId',
+                                            'route' => '/subscribe/:listId/:contactId',
                                             'constraints' => array (
                                                 ':listId' => '[0-9]+',
                                                 ':contactId' => '[0-9]+',
                                             ),
                                             'defaults' => array(
-                                                'controller' => 'playgroundemailcampaign_admin_campaign',
+                                                'controller' => 'playgroundemailcampaign_admin_list',
                                                 'action' => 'subscribe',
                                             ),
                                         ),
@@ -197,13 +197,14 @@ return array(
                                     'unsubscribe' => array(
                                         'type' => 'Segment',
                                         'options' => array(
-                                            'route' => '/unsubscribe/:list/:contactId',
+                                            'route' => '/unsubscribe/:listId/:contactId[/:remove]',
                                             'constraints' => array (
                                                 ':listId' => '[0-9]+',
                                                 ':contactId' => '[0-9]+',
+                                                ':remove' => '[0,1]{1}'
                                             ),
                                             'defaults' => array(
-                                                'controller' => 'playgroundemailcampaign_admin_campaign',
+                                                'controller' => 'playgroundemailcampaign_admin_list',
                                                 'action' => 'unsubscribe',
                                             ),
                                         ),

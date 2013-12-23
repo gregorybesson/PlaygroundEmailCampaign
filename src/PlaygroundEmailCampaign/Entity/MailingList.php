@@ -10,6 +10,8 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Doctrine\ORM\Mapping\PrePersist;
+use Doctrine\ORM\Mapping\PreUpdate;
 
 /**
  * @ORM\Entity @HasLifecycleCallbacks
@@ -45,9 +47,36 @@ class MailingList implements InputFilterAwareInterface
     private $subscriptions;
 
     /**
-     * @ORM\Column(name="distant_id", type="integer", nullable=true)
+     * @ORM\Column(name="distant_id", type="string", nullable=true)
      */
     protected $distantId;
+
+    /**
+     * @ORM\Column(type="datetime", name="created_at")
+     */
+    protected $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", name="updated_at")
+     */
+    protected $updatedAt;
+
+    /**
+     * @PrePersist
+     */
+    public function createChrono()
+    {
+        $this->createdAt = new \DateTime("now");
+        $this->updatedAt = new \DateTime("now");
+    }
+
+    /**
+     * @PreUpdate
+     */
+    public function updateChrono()
+    {
+        $this->updatedAt = new \DateTime("now");
+    }
 
     public function __construct()
     {
@@ -156,6 +185,28 @@ class MailingList implements InputFilterAwareInterface
 
     public function setDistantId($distantId) {
         $this->distantId = $distantId;
+        return $this;
+    }
+
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 }
