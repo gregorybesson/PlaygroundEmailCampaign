@@ -126,7 +126,7 @@ class ListController extends AbstractActionController
         if (!$listId) {
             return $this->redirect()->toRoute('admin/email-campaign/lists');
         }
-        $listId = $this->getMailingListService()->getMailingListMapper()->findById($listId);
+        $list = $this->getMailingListService()->getMailingListMapper()->findById($listId);
         $subscriptions = $this->getMailingListService()->getSubscriptionMapper()->findBy(array('mailingList'=>$list));
         foreach ($subscriptions as $subscription) {
             $this->getMailingListService()->removeSubscription($subscription);

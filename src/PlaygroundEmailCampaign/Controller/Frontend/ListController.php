@@ -21,10 +21,11 @@ class ListController extends AbstractActionController
         $contacts = $contactService->getContactMapper()->findAll();
         $listService = $sm->get('playgroundemailcampaign_mailinglist_service');
         $lists = $listService->getMailingListMapper()->findAll();
+        $list = current($lists);
         foreach($contacts as $contact) {
 //             $contact->setOptin(0);
 //             $contactService->getContactMapper()->update($contact);
-            $subscription = $listService->createSubscription($contact, current($lists));
+            $subscription = $listService->createSubscription($contact, $list);
         }
         return new ViewModel(array());
     }
