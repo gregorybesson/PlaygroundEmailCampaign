@@ -160,31 +160,62 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
 
     /**** CAMPAIGNS ****/
 
+    /**
+     *
+     * @param Campaign $campaign
+     * @return integer list_id if it worked
+     *          boolean false if it failed
+     */
     public function addCampaign($campaign)
     {
         return $this->getWebMailService()->addCampaign($campaign);
     }
 
+    /**
+     *
+     * @param Campaign $campaign
+     * @return boolean weither it worked or not
+     */
     public function updateCampaign($campaign)
     {
         return $this->getWebMailService()->updateCampaign($campaign);
     }
 
+    /**
+     *
+     * @param Campaign $campaign
+     * @return boolean weither it was called properly or not
+     */
     public function deleteCampaign($campaign)
     {
         return $this->getWebMailService()->deleteCampaign($campaign);
     }
 
-    //setUp si en local / changement de service
-    // new service -> pour tous !!
-    //tout ceux qui n'ont pas de id distant : création sur le web mail
+    /**
+     *
+     * @param Campaign $campaign
+     * @return boolean weither the campaign is ready to be sent or not
+     */
+    public function readyToSendCampaign($campaign)
+    {
+        return $this->getWebMailService()->readyToSendCampaign($campaign);
+    }
 
+    /**
+     *
+     * @param Campaign $campaign campaign which we want to replicate
+     * @return  integer id of the replicated campaign (if it worked)
+     *          boolean false (if it failed)
+     */
+    public function replicateCampaign($campaign)
+    {
+        return $this->getWebMailService()->replicateCampaign($campaign);
+    }
 
-    //dans l'autre sens : import depuis le web mail des entités
-
-    // init contact -> all users to contact
-
-    // createContact(pgUser)
+    public function sendCampaign($campaign)
+    {
+        return $this->getWebMailService()->sendCampaign($campaign);
+    }
 
     /**** OTHER ****/
     public function import($fileData) {

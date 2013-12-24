@@ -9,6 +9,7 @@ use Zend\ServiceManager\ServiceManagerAwareInterface;
 use PlaygroundEmailCampaign\Entity\Campaign as CampaignEntity;
 use PlaygroundEmailCampaign\Mapper\Campaign as CampaignMapper;
 use PlaygroundEmailCampaign\Service\WebMailFacade;
+use DoctrineModule\Options\Cache;
 
 class Campaign extends EventProvider implements ServiceManagerAwareInterface
 {
@@ -67,16 +68,52 @@ class Campaign extends EventProvider implements ServiceManagerAwareInterface
         return $result;
     }
 
-    // function schedule sending -> call create emails
-    public function schedule($time)
+    public function replicate($campaignId)
     {
+        $campaignMapper = $this->getCampaignMapper();
+        $campaign = $campaignMapper->findById($campaignId);
+        if (!$campaign) {
+            return false;
+        }
+        $campaignDuplicated = new CampaignEntity();
+        $campaignDuplicated->populate($campaign->getArrayCopy());
+        $result = $this->getFacadeService()->replicateCampaign($campaign);
+        if ($result) {
+            $campaignDuplicated->setDistantId($result);
+            $campaignDuplicated = $campaignMapper->insert($campaignDuplicated);
+        }
+        return $campaignDuplicated;
+    }
 
+//     // function schedule sending -> call create emails
+//     public function schedule($time)
+//     {
+
+//     }
+
+    public function isReadyToSend($campaignId)
+    {
+        $campaign = $this->getCampaignMapper()->findById($campaignId);
+        if (!$campaign) {
+            return false;
+        }
+
+        return $this->getFacadeService()->readyToSendCampaign($campaign);
     }
 
     // fucntion send -> update email statuses
-    public function send()
+    public function send($campaignId)
     {
-
+        $campaign = $this->getCampaignMapper()->findById($campaignId);
+        if (!$campaign) {
+            return false;
+        }
+        $result = $this->getFacadeService()->sendCampaign($campaign);
+        if ($result) {
+            $campaign->setIsSent(1);
+            $campaign = $this->getCampaignMapper()->update($campaign);
+        }
+        return $campaign;
     }
 
     // function create emails

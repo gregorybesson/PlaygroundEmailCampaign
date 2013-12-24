@@ -247,7 +247,7 @@ class MailChimpService extends EventProvider implements ServiceManagerAwareInter
                                     : array('opens'=>false, 'html_clicks'=>false, 'text_clicks'=>false),
                     'title' => $campaign->getName(),
                 ), array(
-                    'html' => '',
+                    'html' => $campaign->getTemplate()->getHtmlContent(),
                 ), array(
                     'saved_segment_id' => $campaign->getMailingList()->getDistantId(),
                 ));
@@ -277,12 +277,19 @@ class MailChimpService extends EventProvider implements ServiceManagerAwareInter
             );
             $campaignData = $this->mc->campaigns->update(
                 $campaign->getDistantId(),
+                "content",
+                array(
+                    'html' => $campaign->getTemplate()->getHtmlContent(),
+                )
+            );
+            $campaignData = $this->mc->campaigns->update(
+                $campaign->getDistantId(),
                 "segment_opts",
                 array(
                     'saved_segment_id' => $campaign->getMailingList()->getDistantId(),
                 )
             );
-            return ($campaignData) ? $campaignData['id'] : false;
+            return ($campaignData) ? true : false;
         } catch (\Mailchimp_Error $e) {
             return false;
         }
@@ -293,6 +300,36 @@ class MailChimpService extends EventProvider implements ServiceManagerAwareInter
         try {
             $this->mc->campaigns->delete($campaign->getDistantId());
             return true;
+        } catch (\Mailchimp_Error $e) {
+            return false;
+        }
+    }
+
+    public function readyToSendCampaign($campaign)
+    {
+        try {
+            $result = $this->mc->campaigns->ready($campaign->getDistantId());
+            return ($result) ? $result['is_ready'] : false;
+        } catch (\Mailchimp_Error $e) {
+            return false;
+        }
+    }
+
+    public function replicateCampaign($campaign)
+    {
+        try {
+            $campaignData = $this->mc->campaigns->replicate($campaign);
+            return ($campaignData) ? $campaignData['id'] : false;
+        } catch (\Mailchimp_Error $e) {
+            return false;
+        }
+    }
+
+    public function sendCampaign($campaign)
+    {
+        try {
+            $result = $this->mc->campaigns->send($campaign->getDistantId());
+            return ($result) ? true : false;
         } catch (\Mailchimp_Error $e) {
             return false;
         }

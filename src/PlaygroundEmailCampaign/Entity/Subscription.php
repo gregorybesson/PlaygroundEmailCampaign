@@ -37,13 +37,13 @@ class Subscription implements InputFilterAwareInterface
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Contact", inversedBy="subscriptions", cascade={"persist","remove"})
+     * @ORM\ManyToOne(targetEntity="Contact", inversedBy="subscriptions", cascade={"persist"})
      * @ORM\JoinColumn(name="contact_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $contact;
 
     /**
-     * @ORM\ManyToOne(targetEntity="MailingList", inversedBy="subscriptions", cascade={"persist","remove"})
+     * @ORM\ManyToOne(targetEntity="MailingList", inversedBy="subscriptions", cascade={"persist"})
      * @ORM\JoinColumn(name="mailing_list_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $mailingList;

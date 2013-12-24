@@ -144,16 +144,16 @@ class CampaignController extends AbstractActionController
         ));
     }
 
-    public function scheduleAction()
-    {
-        if (!$this->getCampaignService()->getFacadeService()->checkConnection() ) {
-            $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
-            return $this->redirect()->toRoute('admin/email-campaign/campaigns');
-        }
-        return new ViewModel(array(
-            'flashMessages' => $this->flashMessenger()->getMessages(),
-        ));
-    }
+//     public function scheduleAction()
+//     {
+//         if (!$this->getCampaignService()->getFacadeService()->checkConnection() ) {
+//             $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
+//             return $this->redirect()->toRoute('admin/email-campaign/campaigns');
+//         }
+//         return new ViewModel(array(
+//             'flashMessages' => $this->flashMessenger()->getMessages(),
+//         ));
+//     }
 
     public function sendAction()
     {
@@ -161,6 +161,33 @@ class CampaignController extends AbstractActionController
             $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
             return $this->redirect()->toRoute('admin/email-campaign/campaigns');
         }
+        $campaignId = $this->getEvent()->getRouteMatch()->getParam('campaignId');
+        if (!$campaignId) {
+            return $this->redirect()->toRoute('admin/email-campaign/campaigns');
+        }
+        if (!$this->getCampaignService()->isReadyToSend($campaignId)) {
+            $this->flashMessenger("Sorry, you can not send this campaign now, information are missing");
+            return $this->redirect()->toRoute('admin/email-campaign/campaigns');
+        }
+        $this->getCampaignService()->send($campaignId);
+
+        $this->flashMessenger("The campaign has been successfully sent");
+        return $this->redirect()->toRoute('admin/email-campaign/campaigns');
+    }
+
+    public function replicateAction()
+    {
+        if (!$this->getCampaignService()->getFacadeService()->checkConnection() ) {
+            $this->flashMessenger("Sorry, the distant service can not be accessed, try it latter");
+            return $this->redirect()->toRoute('admin/email-campaign/campaigns');
+        }
+        $campaignId = $this->getEvent()->getRouteMatch()->getParam('campaignId');
+        if (!$campaignId) {
+            return $this->redirect()->toRoute('admin/email-campaign/campaigns');
+        }
+        $campaignCopy = $this->getCampaignService()->replicate($campaignId);
+        $this->flashMessenger("The campaign has been successfully replicated");
+        return $this->redirect()->toRoute('admin/email-campaign/campaigns');
     }
 
     public function getCampaignService()
