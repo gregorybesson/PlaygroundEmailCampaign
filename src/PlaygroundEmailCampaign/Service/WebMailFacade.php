@@ -69,6 +69,11 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
         $result = $this->getWebMailService()->getPreviewTemplate($template);
     }
 
+    public function getStructTemplate($template)
+    {
+        return $this->getWebMailService()->getSectionsTemplate($template);
+    }
+
     /**
      *
      * @param Template $template
@@ -153,16 +158,64 @@ class WebMailFacade extends EventProvider implements ServiceManagerAwareInterfac
         return $this->getWebMailService()->listLists();
     }
 
-    //setUp si en local / changement de service
-    // new service -> pour tous !!
-    //tout ceux qui n'ont pas de id distant : création sur le web mail
+    /**** CAMPAIGNS ****/
 
+    /**
+     *
+     * @param Campaign $campaign
+     * @return integer list_id if it worked
+     *          boolean false if it failed
+     */
+    public function addCampaign($campaign)
+    {
+        return $this->getWebMailService()->addCampaign($campaign);
+    }
 
-    //dans l'autre sens : import depuis le web mail des entités
+    /**
+     *
+     * @param Campaign $campaign
+     * @return boolean weither it worked or not
+     */
+    public function updateCampaign($campaign)
+    {
+        return $this->getWebMailService()->updateCampaign($campaign);
+    }
 
-    // init contact -> all users to contact
+    /**
+     *
+     * @param Campaign $campaign
+     * @return boolean weither it was called properly or not
+     */
+    public function deleteCampaign($campaign)
+    {
+        return $this->getWebMailService()->deleteCampaign($campaign);
+    }
 
-    // createContact(pgUser)
+    /**
+     *
+     * @param Campaign $campaign
+     * @return boolean weither the campaign is ready to be sent or not
+     */
+    public function readyToSendCampaign($campaign)
+    {
+        return $this->getWebMailService()->readyToSendCampaign($campaign);
+    }
+
+    /**
+     *
+     * @param Campaign $campaign campaign which we want to replicate
+     * @return  integer id of the replicated campaign (if it worked)
+     *          boolean false (if it failed)
+     */
+    public function replicateCampaign($campaign)
+    {
+        return $this->getWebMailService()->replicateCampaign($campaign);
+    }
+
+    public function sendCampaign($campaign)
+    {
+        return $this->getWebMailService()->sendCampaign($campaign);
+    }
 
     /**** OTHER ****/
     public function import($fileData) {

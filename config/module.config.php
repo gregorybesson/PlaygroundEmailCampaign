@@ -259,6 +259,32 @@ return array(
                                             ),
                                         ),
                                     ),
+                                    'replicate' => array(
+                                        'type' => 'Segment',
+                                        'options' => array(
+                                            'route' => '/replicate/:campaignId',
+                                            'constraints' => array(
+                                                ':campaignId' => '[0-9]+',
+                                            ),
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_campaign',
+                                                'action' => 'replicate',
+                                            ),
+                                        ),
+                                    ),
+                                    'send' => array(
+                                        'type' => 'Segment',
+                                        'options' => array(
+                                            'route' => '/send/:campaignId',
+                                            'constraints' => array(
+                                                ':campaignId' => '[0-9]+',
+                                            ),
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_campaign',
+                                                'action' => 'send',
+                                            ),
+                                        ),
+                                    ),
                                 ),
 
                             ),

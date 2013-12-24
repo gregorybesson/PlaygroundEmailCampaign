@@ -113,9 +113,15 @@ class Template extends EventProvider implements ServiceManagerAwareInterface
         return $template;
     }
 
+    public function getStruct($template)
+    {
+        return $this->getFacadeService()->getStructTemplate($template);
+    }
+
     public function listAll()
     {
-        return $this->getFacadeService()->listCustomTemplates();
+//         return $this->getFacadeService()->listCustomTemplates();
+        return $this->getFacadeService()->listDefaultTemplates();
     }
 
     public function remove($templateId)
