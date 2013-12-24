@@ -1,0 +1,26 @@
+<?php
+
+$playgroundemailcampaign = array(
+
+    /**
+     * Drive path to the directory where email campaign media files will be stored
+     */
+    'media_path' => 'public' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'email-campaign',
+
+    /**
+     * Url relative path to the directory where email campaign media files will be stored
+     */
+    'media_url' => 'media/email-campaign',
+
+    /**
+     * web mail user API Key
+     */
+    'userKey' = '999f451057b5f5fbfb3bda744d9ffaf6-us3';
+);
+
+/**
+ * You do not need to edit below this line
+*/
+return array(
+    'playgroundemailcampaign' => $playgroundemailcampaign,
+);
