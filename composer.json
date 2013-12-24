@@ -1,5 +1,5 @@
 {
-    "name" : "playground/emailcampaign",
+    "name" : "playground/email-campaign",
     "description" : "The Email Campaign module !",
     "type" : "library",
     "authors" : [{
@@ -14,10 +14,9 @@
         "email",
         "campaign",
         "newsletter",
-        "one-to-many",
         "marketting",
         "templating",
-        "mailchimp",
+        "mailchimp"
     ],
     "homepage" : "https://github.com/gregorybesson/PlaygroundEmailCampaign",
     "license" : [
