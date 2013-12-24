@@ -87,10 +87,10 @@ class Campaign implements InputFilterAwareInterface
     /**
      * @ORM\Column(type="boolean", name="is_sent")
      */
-    protected $isSent;
+    protected $isSent=false;
 
     /**
-     * @ORM\Column(type="datetime", name="sending_time")
+     * @ORM\Column(type="datetime", name="sending_time", nullable=true)
      */
     protected $sendingTime;
 

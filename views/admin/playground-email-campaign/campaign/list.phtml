@@ -29,18 +29,28 @@
                 <td><?php echo $campaign->getSubject(); ?></td>
                 <td><?php echo $campaign->getIsTracked(); ?></td>
                 <td><?php echo $campaign->getIsSent();?></td>
-                <td><?php echo $this->dateFormat($campaign->getSendingTime(), IntlDateFormatter::LONG, IntlDateFormatter::MEDIUM, $locale);?></td>
+                <td>
+                <?php if ($campaign->getSendingTime()) : ?>
+                    <?php echo $this->dateFormat($campaign->getSendingTime(), IntlDateFormatter::LONG, IntlDateFormatter::MEDIUM, $locale); ?>
+                <?php endif; ?>
+                </td>
                 <td><?php echo $this->dateFormat($campaign->getCreatedAt(), IntlDateFormatter::LONG, IntlDateFormatter::MEDIUM, $locale); ?></td>
                 <td><?php echo $this->dateFormat($campaign->getUpdatedAt(), IntlDateFormatter::LONG, IntlDateFormatter::MEDIUM, $locale); ?></td>
-                <td>
-                    <?php if ($campaign->getIsTracked()) :?>
-                        <a href=''><?php echo $this->translate('Tracking data'); ?></a>
+<!--                 <td> -->
+                    <?php if ($campaign->getIsTracked() && $campaign->getIsSent()) :?>
+                        <a href=''><?php //echo $this->translate('Tracking data'); ?></a>
                     <?php endif; ?>
-                </td>
+<!--                 </td> -->
+                <?php $replicateLink = $this->url('admin/email-campaign/campaigns/replicate', array('campaignId' => $campaign->getId()));?>
                 <?php $editLink = $this->url('admin/email-campaign/campaigns/edit', array('campaignId' => $campaign->getId()));?>
                 <?php $deleteLink = $this->url('admin/email-campaign/campaigns/remove', array('campaignId' => $campaign->getId()));?>
+                <?php $sendLink = $this->url('admin/email-campaign/campaigns/send', array('campaignId' => $campaign->getId()));?>
                 <td>
+                    <!-- <a href='<?php //echo $replicateLink ?>'><?php// echo $this->translate('Replicate'); ?></a>  -->
                     <a href='<?php echo $editLink ?>'><?php echo $this->translate('Edit'); ?></a>
+                    <?php if (!$campaign->getIsSent()) :?>
+                        <a href='<?php echo $sendLink ?>'><?php echo $this->translate('Send'); ?></a>
+                    <?php endif; ?>
                     <a href='<?php echo $deleteLink ?>'><?php echo $this->translate('Remove'); ?></a>
                 </td>
             </tr>
