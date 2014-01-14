@@ -212,6 +212,30 @@ return array(
                                 ),
                             ),
 
+                            'contacts-book' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/contacts',
+                                    'defaults' => array(
+                                        'controller' => 'playgroundemailcampaign_admin_list',
+                                        'action' => 'listContacts',
+                                    ),
+                                ),
+                                'may_terminate' => true,
+                                'child_routes' => array(
+                                    'refresh' => array(
+                                        'type' => 'Literal',
+                                        'options' => array(
+                                            'route' => '/refresh',
+                                            'defaults' => array(
+                                                'controller' => 'playgroundemailcampaign_admin_list',
+                                                'action' => 'initContactBook',
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            ),
+
                             'campaigns' => array(
                                 'type' => 'Literal',
                                 'options' => array(
