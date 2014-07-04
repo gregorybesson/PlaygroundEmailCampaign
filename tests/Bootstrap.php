@@ -1,5 +1,5 @@
 <?php
-namespace PlaygroundWeatherTest;
+namespace PlaygroundEmailCampaignTest;
 
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
