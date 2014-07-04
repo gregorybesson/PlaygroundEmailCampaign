@@ -5,7 +5,7 @@ namespace PlaygroundEmailCampaign\Form\Admin;
 use Zend\Form\Fieldset;
 use Zend\Stdlib\Hydrator\ClassMethods as ClassMethodsHydrator;
 use PlaygroundCore\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\I18n\Translator\Translator;
+use Zend\Mvc\I18n\Translator;
 use Zend\ServiceManager\ServiceManager;
 
 class SubscriptionFieldset extends Fieldset

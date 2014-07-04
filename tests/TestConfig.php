@@ -9,7 +9,7 @@ return array(
     	'AsseticBundle',
     	'ZfcBase',
    		'PlaygroundCore',
-        'PlaygroundUser'
+        'PlaygroundUser',
         'PlaygroundDesign',
         'PlaygroundEmailCampaign',
     ),
