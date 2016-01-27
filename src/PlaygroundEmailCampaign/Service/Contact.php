@@ -29,10 +29,6 @@ class Contact extends UserService implements ServiceManagerAwareInterface
      */
     protected $serviceManager;
 
-    public function __construct()
-    {
-    }
-
     public function initContactBook()
     {
         $users = $this->getUserMapper()->findAll();
@@ -55,7 +51,6 @@ class Contact extends UserService implements ServiceManagerAwareInterface
             $contact->setOptin($user->getOptin());
         }
         $contact = $this->getContactMapper()->insert($contact);
-
         return $contact;
     }
 
