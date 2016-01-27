@@ -3,8 +3,8 @@
     "description" : "The Email Campaign module !",
     "type" : "library",
     "authors" : [{
-            "name" : "Stephanie FAURE",
-            "email" : "stephanie.faure@adfab.fr",
+            "name" : "Grégory Besson",
+            "email" : "gregory.besson@adfab.fr",
             "homepage" : "http://www.playground.gg"
         }
     ],
@@ -14,7 +14,7 @@
         "email",
         "campaign",
         "newsletter",
-        "marketting",
+        "marketing",
         "templating",
         "mailchimp"
     ],
@@ -24,20 +24,20 @@
     ],
     "minimum-stability": "dev",
     "require" : {
-        "zendframework/zend-stdlib" : "~2.1",
-        "php" : ">=5.3.3",
-        "zendframework/zend-mvc" : "~2.1",
-        "zendframework/zend-form" : "~2.1",
-        "zendframework/zend-loader" : "~2.1",
-        "zendframework/zend-servicemanager" : "~2.1",
-        "playground/core" : "dev-master",
-        "playground/user" : "dev-develop",
-        "playground/design" : "dev-develop",
-        "zendframework/zend-modulemanager" : "~2.1",
-        "mailchimp/mailchimp": "dev-master"
+        "zendframework/zend-stdlib" : "2.*",
+        "php" : ">=5.5.0",
+        "zendframework/zend-mvc" : "2.*",
+        "zendframework/zend-form" : "2.*",
+        "zendframework/zend-loader" : "2.*",
+        "zendframework/zend-servicemanager" : "2.*",
+        "playground/core" : "2.*",
+        "playground/user" : "2.*",
+        "playground/design" : "2.*",
+        "zendframework/zend-modulemanager" : "2.*",
+        "mailchimp/mailchimp": "2.*"
     },
     "require-dev" : {
-        "phpunit/phpunit" : "3.7.*"
+        "phpunit/phpunit" : "4.*"
     },
     "autoload" : {
         "psr-0" : {

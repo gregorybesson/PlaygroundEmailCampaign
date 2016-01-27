@@ -1,6 +1,7 @@
 <?php $this->plugin('translate')->setTranslatorTextDomain('playgroundemailcampaign');// Pour le texte ?>
 <ul class="liste-buttons">
-    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/lists/add'); ?>"><?php echo $this->translate('Ajouter une liste'); ?></a></li>
+    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/lists/add'); ?>"><?php echo $this->translate('Add a list'); ?></a></li>
+    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/contacts-book/refresh'); ?>"><?php echo $this->translate('Refresh contact book'); ?></a></li>
 </ul>
 <h2><?php echo $this->translate('Listes') ?></h2>
     <table id="mailing_lists">
@@ -33,5 +34,6 @@
         </tbody>
     </table>
 <ul class="liste-buttons">
-    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/lists/add'); ?>"><?php echo $this->translate('Ajouter une liste'); ?></a></li>
+    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/lists/add'); ?>"><?php echo $this->translate('Add a list'); ?></a></li>
+    <li class="btn-admin"><a href="<?php echo $this->url('admin/email-campaign/contacts-book/refresh'); ?>"><?php echo $this->translate('Refresh contact book'); ?></a></li>
 </ul>

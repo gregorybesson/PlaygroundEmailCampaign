@@ -226,6 +226,20 @@ class ListController extends AbstractActionController
 
     //export action -> all emails form a list
 
+    public function initContactBookAction()
+    {
+        $this->getContactService()->initContactBook();
+        $this->flashMessenger()->addMessage('Contacts have been updated');
+        $this->redirect()->toRoute('admin/email-campaign/lists');
+    }
+
+    public function listContactsAction ()
+    {
+        return new ViewModel(array(
+
+        ));
+    }
+
     public function getMailingListService()
     {
         if ($this->mailingListService === null) {
