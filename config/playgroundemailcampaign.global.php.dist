@@ -1,0 +1,12 @@
+<?php
+$settings = array(
+
+    'userKey' => ''
+);
+
+/**
+ * You do not need to edit below this line
+ */
+return array(
+    'playgroundemailcampaign' => $settings,
+);

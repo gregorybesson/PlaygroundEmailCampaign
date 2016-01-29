@@ -8,7 +8,7 @@ use Zend\ServiceManager\ServiceManagerAwareInterface;
 
 use PlaygroundEmailCampaign\Options\ModuleOptions;
 use Assetic\Exception\Exception;
-use Doctrine\Tests\Common\Annotations\Fixtures\Annotation\Template;
+//use Doctrine\Tests\Common\Annotations\Fixtures\Annotation\Template;
 
 class MailChimpService extends EventProvider implements ServiceManagerAwareInterface
 {

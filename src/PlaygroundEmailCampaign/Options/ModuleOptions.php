@@ -7,12 +7,12 @@ use Zend\Stdlib\AbstractOptions;
 class ModuleOptions extends AbstractOptions
 {
     /**
-     * drive path to weather media files
+     * drive path to media files
      */
     protected $media_path = 'public/media/email-campaign';
 
     /**
-     * url path to story media files
+     * url path to media files
      */
     protected $media_url = 'media/email-campaign';
 

@@ -14,13 +14,33 @@ return array(
             )
         )
     ),
-    'view_manager' => array(
-        'template_map' => array(),
-        'template_path_stack' => array(
-            __DIR__ . '/../views/admin',
-            __DIR__ . '/../views/frontend'
+    'bjyauthorize' => array(
+    
+        'resource_providers' => array(
+            'BjyAuthorize\Provider\Resource\Config' => array(
+                'email-campaign'      => array(),
+            ),
+        ),
+    
+        'rule_providers' => array(
+            'BjyAuthorize\Provider\Rule\Config' => array(
+                'allow' => array(
+                    array(array('admin'), 'email-campaign',       array('list','add','edit','delete')),
+                ),
+            ),
+        ),
+    
+        'guards' => array(
+            'BjyAuthorize\Guard\Controller' => array(
+                // Admin area
+                array('controller' => 'playgroundemailcampaign_admin_template', 'roles' => array('admin')),
+                array('controller' => 'playgroundemailcampaign_admin_list', 'roles' => array('admin')),
+                array('controller' => 'playgroundemailcampaign_admin_campaign', 'roles' => array('admin')),
+                array('controller' => 'playgroundemailcampaign_list', 'roles' => array('guest', 'user')),
+            ),
         ),
     ),
+
     'translator' => array(
         'locale' => 'fr_FR',
         'translation_file_patterns' => array(
@@ -32,6 +52,15 @@ return array(
             )
         )
     ),
+
+    'view_manager' => array(
+        'template_map' => array(),
+        'template_path_stack' => array(
+            __DIR__ . '/../views/admin',
+            __DIR__ . '/../views/frontend'
+        ),
+    ),
+
     'controllers' => array(
         'invokables' => array(
             'playgroundemailcampaign_admin_template' => 'PlaygroundEmailCampaign\Controller\Admin\TemplateController',
@@ -323,37 +352,37 @@ return array(
             'playgroundemailcampaign' => array(
                 'label' => 'Email Campaigns',
                 'route' => 'admin/email-campaign',
-                'resource' => 'emailcampaign',
+                'resource' => 'email-campaign',
                 'privilege' => 'list',
                 'pages' => array(
                     'list-templates' => array(
                         'label' => 'Templates',
                         'route' => 'admin/email-campaign/templates',
-                        'resource' => 'emailcampaign',
+                        'resource' => 'email-campaign',
                         'privilege' => 'list',
                     ),
                     'list-lists' => array(
                         'label' => 'Lists',
                         'route' => 'admin/email-campaign/lists',
-                        'resource' => 'emailcampaign',
+                        'resource' => 'email-campaign',
                         'privilege' => 'list',
                     ),
                     'list-campaigns' => array(
                         'label' => 'Campaigns',
                         'route' => 'admin/email-campaign/campaigns',
-                        'resource' => 'emailcampaign',
+                        'resource' => 'email-campaign',
                         'privilege' => 'list',
                     ),
 //                     'list-contacts' => array(
 //                         'label' => 'Contacts',
 //                         'route' => 'admin/email-campaign/contacts',
-//                         'resource' => 'emailcampaign',
+//                         'resource' => 'email-campaign',
 //                         'privilege' => 'list',
 //                     ),
 //                     'tracking-data' => array(
 //                         'label' => 'Tracking',
 //                         'route' => 'admin/email-campaign/tracking',
-//                         'resource' => 'emailcampaign',
+//                         'resource' => 'email-campaign',
 //                         'privilege' => 'list',
 //                     ),
                 ),
